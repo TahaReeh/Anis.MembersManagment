@@ -20,6 +20,11 @@ namespace Anis.MembersManagment.Command.Commands.SendInvitation
             {
                 if (events.Last().Type is "InvitationSent")
                     throw new RpcException(new Status(StatusCode.InvalidArgument, "Invitation still pending"));  //why not AlreadyExistException
+
+                if (events.Last().Type is "InvitationAccepted") //or "MemberJoined"
+                    throw new RpcException(new Status(StatusCode.InvalidArgument, "The member is already subscribed"));
+
+
             }
 
             var invitation = Invitation.SendInvitation(command, newinvitationNumber.ToString());
