@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "Anis.MembersManagment.Command.InvitationsProto";
+option csharp_namespace = "Anis.MembersManagment.Command.Test.InvitationsProto";
 
 package members.commands.v1;
 

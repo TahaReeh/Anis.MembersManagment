@@ -1,16 +1,31 @@
-using Anis.MembersManagment.Command;
+using Anis.MembersManagment.Command.Extensions;
+using Anis.MembersManagment.Command.Infrastructure.Persistence;
 using Anis.MembersManagment.Command.InvitationsProto;
 using Grpc.Core;
+using MediatR;
 
 namespace Anis.MembersManagment.Command.Services
 {
     public class InvitationsService : Invitations.InvitationsBase
     {
-        private readonly ILogger<InvitationsService> _logger;
-        public InvitationsService(ILogger<InvitationsService> logger)
+        private readonly IMediator _mediator;
+
+        public InvitationsService(IMediator mediator)
         {
-            _logger = logger;
+            _mediator = mediator;
         }
 
+        public override async Task<Response> SendInvitation(SendInvitationRequest request, ServerCallContext context)
+        {
+            var command = request.ToCommand();
+
+            var response = await _mediator.Send(command);
+
+            return new Response()
+            {
+                Id = response,
+                Message = "Invitation sent successfully"
+            };
+        }
     }
 }
