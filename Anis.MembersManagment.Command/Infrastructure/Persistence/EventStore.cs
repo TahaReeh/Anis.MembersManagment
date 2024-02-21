@@ -1,18 +1,16 @@
 ﻿using Anis.MembersManagment.Command.Abstractions;
 using Anis.MembersManagment.Command.Domain;
 using Anis.MembersManagment.Command.Events;
+using Anis.MembersManagment.Command.Infrastructure.MessageBus;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Anis.MembersManagment.Command.Infrastructure.Persistence
 {
-    public class EventStore : IEventStore
+    public class EventStore(ApplicationDbContext context, ServiceBusPublisher publisher) : IEventStore
     {
-        private readonly ApplicationDbContext _context;
-
-        public EventStore(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ApplicationDbContext _context = context;
+        private readonly ServiceBusPublisher _publisher = publisher;
 
         public Task<List<Event>> GetAllAsync(string aggregateId, CancellationToken cancellationToken) =>
             _context.Events
@@ -31,9 +29,14 @@ namespace Anis.MembersManagment.Command.Infrastructure.Persistence
         {
             var events = invitation.GetUnCommittedEvents();
 
+            var messages = events.Select(x => new OutboxMessage(x));
+
             await _context.Events.AddRangeAsync(events,cancellationToken);
+            await _context.OutboxMessages.AddRangeAsync(messages, cancellationToken);
 
             await _context.SaveChangesAsync(cancellationToken);
+
+            _publisher.StartPublishing();
         }
     }
 }

@@ -41,7 +41,6 @@
 
   <ItemGroup>
     <Folder Include="InvitationsServiceTests\Cancel\" />
-    <Folder Include="InvitationsServiceTests\Accept\" />
     <Folder Include="InvitationsServiceTests\Reject\" />
   </ItemGroup>
 

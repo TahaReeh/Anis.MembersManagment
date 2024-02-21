@@ -1,6 +1,5 @@
 ﻿using Anis.MembersManagment.Command.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Anis.MembersManagment.Command.Test.Helpers
 {

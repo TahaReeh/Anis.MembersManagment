@@ -1,6 +1,8 @@
 using Anis.MembersManagment.Command.Abstractions;
+using Anis.MembersManagment.Command.Infrastructure.MessageBus;
 using Anis.MembersManagment.Command.Infrastructure.Persistence;
 using Anis.MembersManagment.Command.Services;
+using Azure.Messaging.ServiceBus;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +13,9 @@ builder.Services.AddMediatR(o => o.RegisterServicesFromAssemblyContaining<Progra
 builder.Services.AddDbContext<ApplicationDbContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("Database")));
 
 builder.Services.AddScoped<IEventStore, EventStore>();
+builder.Services.AddSingleton(new ServiceBusClient(
+    builder.Configuration.GetConnectionString("ServiceBus")));
+builder.Services.AddSingleton<ServiceBusPublisher>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

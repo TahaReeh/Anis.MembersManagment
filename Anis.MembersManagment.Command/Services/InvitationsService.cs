@@ -27,5 +27,18 @@ namespace Anis.MembersManagment.Command.Services
                 Message = "Invitation sent successfully"
             };
         }
+
+        public override async Task<Response> AcceptInvitation(AcceptInvitationRequest request, ServerCallContext context)
+        {
+            var command = request.ToCommand();
+
+            var response = await _mediator.Send(command);
+
+            return new Response()
+            {
+                Id = response,
+                Message = "Invitation accepted"
+            };
+        }
     }
 }

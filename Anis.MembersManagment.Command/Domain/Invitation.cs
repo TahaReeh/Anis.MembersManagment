@@ -1,4 +1,5 @@
 ﻿using Anis.MembersManagment.Command.Abstractions;
+using Anis.MembersManagment.Command.Commands.AcceptInvitation;
 using Anis.MembersManagment.Command.Commands.SendInvitation;
 using Anis.MembersManagment.Command.Events;
 using Anis.MembersManagment.Command.Extensions;
@@ -15,6 +16,11 @@ namespace Anis.MembersManagment.Command.Domain
             return invitation;
         }
 
+        public void AcceptInvitation(AcceptInvitationCommand command)
+        {
+            ApplyNewChange(command.ToEvent(NextSequence));
+        }
+
         public string AccountId { get; private set; } = string.Empty;
         public string SubscriptionId { get; private set; } = string.Empty;
         public string MemberId { get; private set; } = string.Empty;
@@ -26,10 +32,20 @@ namespace Anis.MembersManagment.Command.Domain
                 case InvitationSent e:
                     Mutate(e);
                     break;
+                case InvitationAccepted e:
+                    Mutate(e);
+                    break;
             }
         }
 
         public void Mutate(InvitationSent @event)
+        {
+            AccountId = @event.Data.AccountId;
+            SubscriptionId = @event.Data.SubscriptionId;
+            MemberId = @event.Data.MemberId;
+        }
+
+        public void Mutate(InvitationAccepted @event)
         {
             AccountId = @event.Data.AccountId;
             SubscriptionId = @event.Data.SubscriptionId;

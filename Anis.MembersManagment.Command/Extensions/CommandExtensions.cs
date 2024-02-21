@@ -1,4 +1,5 @@
-﻿using Anis.MembersManagment.Command.Commands.SendInvitation;
+﻿using Anis.MembersManagment.Command.Commands.AcceptInvitation;
+using Anis.MembersManagment.Command.Commands.SendInvitation;
 using Anis.MembersManagment.Command.Domain;
 using Anis.MembersManagment.Command.InvitationsProto;
 
@@ -19,5 +20,15 @@ namespace Anis.MembersManagment.Command.Extensions
                     ManageDevices = request.Permissions.ManageDevices
                 }
             };
+
+        public static AcceptInvitationCommand ToCommand(this AcceptInvitationRequest request)
+           => new()
+           {
+               Id = request.Id,
+               AccountId = request.AccountId,
+               SubscriptionId = request.SubscriptionId,
+               MemberId = request.MemberId,
+               UserId = request.UserId
+           };
     }
 }

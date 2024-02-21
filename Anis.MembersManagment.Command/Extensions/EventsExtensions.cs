@@ -1,4 +1,5 @@
-﻿using Anis.MembersManagment.Command.Commands.SendInvitation;
+﻿using Anis.MembersManagment.Command.Commands.AcceptInvitation;
+using Anis.MembersManagment.Command.Commands.SendInvitation;
 using Anis.MembersManagment.Command.Events;
 
 namespace Anis.MembersManagment.Command.Extensions
@@ -18,5 +19,17 @@ namespace Anis.MembersManagment.Command.Extensions
          UserId: command.UserId,
          Version: 1
          );
+
+        public static InvitationAccepted ToEvent(this AcceptInvitationCommand command, int sequence) => new(
+          AggregateId: command.Id,
+           Sequence: sequence,
+           DateTime: DateTime.UtcNow,
+           Data: new InvitationAcceptedData(
+               AccountId: command.AccountId,
+               SubscriptionId: command.SubscriptionId,
+               MemberId: command.MemberId),
+           UserId: command.UserId,
+           Version: 1
+           );
     }
 }
