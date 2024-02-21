@@ -6,14 +6,9 @@ using MediatR;
 
 namespace Anis.MembersManagment.Command.Services
 {
-    public class InvitationsService : Invitations.InvitationsBase
+    public class InvitationsService(IMediator mediator) : Invitations.InvitationsBase
     {
-        private readonly IMediator _mediator;
-
-        public InvitationsService(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        private readonly IMediator _mediator = mediator;
 
         public override async Task<Response> SendInvitation(SendInvitationRequest request, ServerCallContext context)
         {
