@@ -116,7 +116,67 @@ namespace Anis.MembersManagment.Command.Test.InvitationsServiceTests.Send
             Assert.Equal(StatusCode.InvalidArgument, exception.StatusCode);
         }
 
+        [Theory]
+        [InlineData("accountId", "SubscriptionId", "MemberId", "UserId")]
+        public async Task SendInvitation_SendNewInvitationToSameMemberAfterCancelOrReject_InvitationSentEventSavedWithSameIdPutLastNumberIncreased(
+           string accountId,
+           string subscriptionId,
+           string memberId,
+           string UserId)
+        {
+            var client = new Invitations.InvitationsClient(_factory.CreateGrpcChannel());
 
-        
+            var firstSendRequest = new SendInvitationRequest
+            {
+                AccountId = accountId,
+                SubscriptionId = subscriptionId,
+                MemberId = memberId,
+                UserId = UserId,
+                Permissions = new Permissions
+                {
+                    Transfer = true,
+                    PurchaseCards = false,
+                    ManageDevices = false
+                }
+            };
+
+            var firstSendResponse = await client.SendInvitationAsync(firstSendRequest);
+
+            var cancelRequest = new CancelInvitationRequest
+            {
+                Id = firstSendResponse.Id,
+                AccountId = accountId,
+                SubscriptionId = subscriptionId,
+                MemberId = memberId,
+                UserId = UserId,
+            };
+
+            await client.CancelInvitationAsync(cancelRequest);
+
+            var secondSendRequest = new SendInvitationRequest
+            {
+                AccountId = accountId,
+                SubscriptionId = subscriptionId,
+                MemberId = memberId,
+                UserId = UserId,
+                Permissions = new Permissions
+                {
+                    Transfer = true,
+                    PurchaseCards = false,
+                    ManageDevices = false
+                }
+            };
+
+            var secondSendResponse = await client.SendInvitationAsync(secondSendRequest);
+
+            using var scope = _factory.Services.CreateScope();
+            var eventsStore = scope.ServiceProvider.GetRequiredService<IEventStore>();
+            var events = await eventsStore.GetAllLikeAsync($"{subscriptionId}_{memberId}", new CancellationToken());
+
+            Assert.Equal(3,events.Count);
+            Assert.Equal($"{subscriptionId}_{memberId}_1", firstSendResponse.Id);
+            Assert.Equal($"{subscriptionId}_{memberId}_2", secondSendResponse.Id);
+        }
+
     }
 }

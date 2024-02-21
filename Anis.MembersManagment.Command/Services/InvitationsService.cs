@@ -40,5 +40,31 @@ namespace Anis.MembersManagment.Command.Services
                 Message = "Invitation accepted"
             };
         }
+
+        public override async Task<Response> CancelInvitation(CancelInvitationRequest request, ServerCallContext context)
+        {
+            var command = request.ToCommand();
+
+            var response = await _mediator.Send(command);
+
+            return new Response()
+            {
+                Id = response,
+                Message = "Invitation cancelled"
+            };
+        }
+
+        public override async Task<Response> RejectInvitation(RejectInvitationRequest request, ServerCallContext context)
+        {
+            var command = request.ToCommand();
+
+            var response = await _mediator.Send(command);
+
+            return new Response()
+            {
+                Id = response,
+                Message = "Invitation rejected"
+            };
+        }
     }
 }

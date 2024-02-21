@@ -40,11 +40,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="InvitationsServiceTests\Cancel\" />
-    <Folder Include="InvitationsServiceTests\Reject\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Protobuf Include="Protos\invitations.proto" GrpcServices="Client" />
   </ItemGroup>
 

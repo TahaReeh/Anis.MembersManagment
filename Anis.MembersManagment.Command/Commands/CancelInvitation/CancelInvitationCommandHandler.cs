@@ -4,28 +4,28 @@ using Anis.MembersManagment.Command.Exceptions;
 using Grpc.Core;
 using MediatR;
 
-namespace Anis.MembersManagment.Command.Commands.AcceptInvitation
+namespace Anis.MembersManagment.Command.Commands.CancelInvitation
 {
-    public class AcceptInvitationCommandHandler(IEventStore eventStore) : IRequestHandler<AcceptInvitationCommand, string>
+    public class CancelInvitationCommandHandler(IEventStore eventStore) : IRequestHandler<CancelInvitationCommand, string>
     {
         private readonly IEventStore _eventStore = eventStore;
 
-        public async Task<string> Handle(AcceptInvitationCommand command, CancellationToken cancellationToken)
+        public async Task<string> Handle(CancelInvitationCommand command, CancellationToken cancellationToken)
         {
             var events = await _eventStore.GetAllAsync(command.Id, cancellationToken);
 
             if (events.Count == 0)
-                throw new NotFoundException("Invitation not found");
+                throw new RpcException(new Status(StatusCode.InvalidArgument, "Invitation not found"));
 
             if (events.Last().Type is "InvitationAccepted") //or "MemberJoined"
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "The member already exists in this subscription"));
 
             if (events.Last().Type is "InvitationCancelled" or "InvitationRejected")
-                throw new RpcException(new Status(StatusCode.InvalidArgument, "This invitation is invalid"));
+                throw new RpcException(new Status(StatusCode.InvalidArgument, "This Invitation is invalid"));
 
             var invitation = Invitation.LoadFromHistory(events);
 
-            invitation.AcceptInvitation(command);
+            invitation.CancelInvitation(command);
 
             await _eventStore.CommitAsync(invitation, cancellationToken);
 
