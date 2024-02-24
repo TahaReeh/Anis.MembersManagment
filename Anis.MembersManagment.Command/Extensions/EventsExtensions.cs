@@ -8,9 +8,9 @@ namespace Anis.MembersManagment.Command.Extensions
 {
     public static class EventsExtensions
     {
-        public static InvitationSent ToEvent(this SendInvitationCommand command, string newinvitationNumber) => new(
-         AggregateId: $"{command.SubscriptionId}_{command.MemberId}_{newinvitationNumber}",
-         Sequence: 1,
+        public static InvitationSent ToEvent(this SendInvitationCommand command, int sequence) => new(
+         AggregateId: $"{command.SubscriptionId}_{command.MemberId}",
+         Sequence: sequence,
          DateTime: DateTime.UtcNow,
          Data: new InvitationSentData(
              AccountId: command.AccountId,

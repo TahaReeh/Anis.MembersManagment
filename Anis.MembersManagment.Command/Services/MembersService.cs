@@ -1,12 +1,11 @@
 using Anis.MembersManagment.Command.Extensions;
-using Anis.MembersManagment.Command.Infrastructure.Persistence;
-using Anis.MembersManagment.Command.InvitationsProto;
+using Anis.MembersManagment.Command.MembersProto;
 using Grpc.Core;
 using MediatR;
 
 namespace Anis.MembersManagment.Command.Services
 {
-    public class InvitationsService(IMediator mediator) : Invitations.InvitationsBase
+    public class MembersService(IMediator mediator) : Members.MembersBase
     {
         private readonly IMediator _mediator = mediator;
 

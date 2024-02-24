@@ -1,23 +1,11 @@
-﻿using Microsoft.Identity.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Anis.MembersManagment.Command.Test.InvitationsServiceTests.Cancel
+﻿namespace Anis.MembersManagment.Command.Test.InvitationsServiceTests.Cancel
 {
-    public class CancelInvitationTest : IClassFixture<WebApplicationFactory<Program>>
+    public class CancelInvitationTest(WebApplicationFactory<Program> factory, ITestOutputHelper helper) : IClassFixture<WebApplicationFactory<Program>>
     {
-        private readonly WebApplicationFactory<Program> _factory;
-
-        public CancelInvitationTest(WebApplicationFactory<Program> factory, ITestOutputHelper helper)
-        {
-            _factory = factory.WithDefaultConfigurations(helper, services =>
+        private readonly WebApplicationFactory<Program> _factory = factory.WithDefaultConfigurations(helper, services =>
             {
                 services.ReplaceWithInMemoryDatabase();
             });
-        }
 
         [Theory]
         [InlineData("accountId", "SubscriptionId", "MemberId", "UserId")]
@@ -27,7 +15,7 @@ namespace Anis.MembersManagment.Command.Test.InvitationsServiceTests.Cancel
           string MemberId,
           string UserId)
         {
-            var client = new Invitations.InvitationsClient(_factory.CreateGrpcChannel());
+            var client = new Members.MembersClient(_factory.CreateGrpcChannel());
 
             var sendRequest = new SendInvitationRequest
             {
@@ -71,7 +59,7 @@ namespace Anis.MembersManagment.Command.Test.InvitationsServiceTests.Cancel
           string MemberId,
           string UserId)
         {
-            var client = new Invitations.InvitationsClient(_factory.CreateGrpcChannel());
+            var client = new Members.MembersClient(_factory.CreateGrpcChannel());
 
             var sendRequest = new SendInvitationRequest
             {

@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Protos\invitations.proto" />
+    <None Remove="Protos\members.proto" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\invitations.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\members.proto" GrpcServices="Client" />
   </ItemGroup>
 
 </Project>

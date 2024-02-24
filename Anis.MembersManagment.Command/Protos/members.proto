@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-option csharp_namespace = "Anis.MembersManagment.Command.Test.InvitationsProto";
+option csharp_namespace = "Anis.MembersManagment.Command.MembersProto";
 
 package members.commands.v1;
 
-service Invitations {
+service Members {
 
   rpc SendInvitation (SendInvitationRequest) returns (Response);
   rpc CancelInvitation (CancelInvitationRequest) returns (Response);

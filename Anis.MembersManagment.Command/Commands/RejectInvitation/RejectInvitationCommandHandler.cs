@@ -3,7 +3,6 @@ using Anis.MembersManagment.Command.Domain;
 using Anis.MembersManagment.Command.Exceptions;
 using Grpc.Core;
 using MediatR;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Anis.MembersManagment.Command.Commands.RejectInvitation
 {
@@ -18,17 +17,11 @@ namespace Anis.MembersManagment.Command.Commands.RejectInvitation
             if (events.Count == 0)
                 throw new NotFoundException("Invitation not found");
 
-            if (events.Last().Type is "InvitationAccepted") //or "MemberJoined"
-                throw new RpcException(new Status(StatusCode.InvalidArgument, "The member already exists in this subscription"));
+            var member = Member.LoadFromHistory(events);
 
-            if (events.Last().Type is "InvitationCancelled" or "InvitationRejected")
-                throw new RpcException(new Status(StatusCode.InvalidArgument, "This Invitation is invalid"));
+            member.RejectInvitation(command);
 
-            var invitation = Invitation.LoadFromHistory(events);
-
-            invitation.RejectInvitation(command);
-
-            await _eventStore.CommitAsync(invitation, cancellationToken);
+            await _eventStore.CommitAsync(member, cancellationToken);
 
             return command.Id;
         }

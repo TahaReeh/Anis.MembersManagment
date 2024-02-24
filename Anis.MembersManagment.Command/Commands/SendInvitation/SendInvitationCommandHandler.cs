@@ -1,7 +1,5 @@
 ﻿using Anis.MembersManagment.Command.Abstractions;
 using Anis.MembersManagment.Command.Domain;
-using Anis.MembersManagment.Command.Exceptions;
-using Grpc.Core;
 using MediatR;
 
 namespace Anis.MembersManagment.Command.Commands.SendInvitation
@@ -12,33 +10,20 @@ namespace Anis.MembersManagment.Command.Commands.SendInvitation
 
         public async Task<string> Handle(SendInvitationCommand command, CancellationToken cancellationToken)
         {
-            int newinvitationNumber = 1;
-            char delimiter = '_';
+            var events = await _eventStore.GetAllAsync($"{command.SubscriptionId}_{command.MemberId}", cancellationToken);
 
-            var events = await _eventStore.GetAllLikeAsync($"{command.SubscriptionId}_{command.MemberId}", cancellationToken);
+            Member member;
 
             if (events.Count != 0)
-            {
-                if (events.Last().Type is "InvitationSent")
-                    throw new RpcException(new Status(StatusCode.InvalidArgument, "Invitation still pending"));  //why not AlreadyExistException
+                member = Member.LoadFromHistory(events);
+            else
+                member = new();
 
-                if (events.Last().Type is "InvitationAccepted") //or "MemberJoined"
-                    throw new RpcException(new Status(StatusCode.InvalidArgument, "The member already exists in this subscription"));
+            member.SendInvitation(command);
 
-                if (events.Last().Type is "InvitationCancelled" or "InvitationRejected") //or "MemberLeft" or "MemberRemoved"
-                {
-                    string[] aggregateParts = events.Last().AggregateId.Split(delimiter);
-                    string invitationNumber = aggregateParts.Length > 1 ? aggregateParts[2] : "";
+            await _eventStore.CommitAsync(member, cancellationToken);
 
-                    newinvitationNumber = Convert.ToInt32(invitationNumber) + 1;
-                }
-            }
-
-            var invitation = Invitation.SendInvitation(command, newinvitationNumber.ToString());
-
-            await _eventStore.CommitAsync(invitation, cancellationToken);
-
-            return invitation.Id.ToString();
+            return member.Id;
         }
     }
 }
