@@ -25,9 +25,9 @@ namespace Anis.MembersManagment.Command.Infrastructure.Persistence
             .ToListAsync(cancellationToken);
 
 
-        public async Task CommitAsync(Invitation invitation, CancellationToken cancellationToken)
+        public async Task CommitAsync(Member member, CancellationToken cancellationToken)
         {
-            var events = invitation.GetUnCommittedEvents();
+            var events = member.GetUnCommittedEvents();
 
             var messages = events.Select(x => new OutboxMessage(x));
 

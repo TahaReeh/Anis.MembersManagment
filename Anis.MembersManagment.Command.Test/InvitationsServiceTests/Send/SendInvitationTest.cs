@@ -1,19 +1,11 @@
-﻿using Azure.Core;
-using Microsoft.Identity.Client;
-
-namespace Anis.MembersManagment.Command.Test.InvitationsServiceTests.Send
+﻿namespace Anis.MembersManagment.Command.Test.InvitationsServiceTests.Send
 {
-    public class SendInvitationTest : IClassFixture<WebApplicationFactory<Program>>
+    public class SendInvitationTest(WebApplicationFactory<Program> factory, ITestOutputHelper helper) : IClassFixture<WebApplicationFactory<Program>>
     {
-        private readonly WebApplicationFactory<Program> _factory;
-
-        public SendInvitationTest(WebApplicationFactory<Program> factory, ITestOutputHelper helper)
-        {
-            _factory = factory.WithDefaultConfigurations(helper, services =>
+        private readonly WebApplicationFactory<Program> _factory = factory.WithDefaultConfigurations(helper, services =>
             {
                 services.ReplaceWithInMemoryDatabase();
             });
-        }
 
         [Theory]
         [InlineData(true, true, true)]
@@ -23,7 +15,7 @@ namespace Anis.MembersManagment.Command.Test.InvitationsServiceTests.Send
             bool purchaseCards,
             bool manageDevices)
         {
-            var client = new Invitations.InvitationsClient(_factory.CreateGrpcChannel());
+            var client = new Members.MembersClient(_factory.CreateGrpcChannel());
 
             var request = new SendInvitationRequest
             {
@@ -46,14 +38,14 @@ namespace Anis.MembersManagment.Command.Test.InvitationsServiceTests.Send
             var events = await eventsStore.GetAllLikeAsync($"{request.SubscriptionId}_{request.MemberId}", new CancellationToken());
 
             Assert.Single(events);
-            Assert.Equal($"{request.SubscriptionId}_{request.MemberId}_1", response.Id);
+            Assert.Equal($"{request.SubscriptionId}_{request.MemberId}", response.Id);
         }
 
 
         [Fact]
         public async Task SendInvitation_SendDuplicateInvitationWhileItsStillPending_ThrowsInvalidArgumentRpcException()
         {
-            var client = new Invitations.InvitationsClient(_factory.CreateGrpcChannel());
+            var client = new Members.MembersClient(_factory.CreateGrpcChannel());
 
             var request = new SendInvitationRequest
             {
@@ -84,7 +76,7 @@ namespace Anis.MembersManagment.Command.Test.InvitationsServiceTests.Send
             string MemberId,
             string UserId)
         {
-            var client = new Invitations.InvitationsClient(_factory.CreateGrpcChannel());
+            var client = new Members.MembersClient(_factory.CreateGrpcChannel());
 
             var sendRequest = new SendInvitationRequest
             {
@@ -118,13 +110,13 @@ namespace Anis.MembersManagment.Command.Test.InvitationsServiceTests.Send
 
         [Theory]
         [InlineData("accountId", "SubscriptionId", "MemberId", "UserId")]
-        public async Task SendInvitation_SendNewInvitationToSameMemberAfterCancelOrReject_InvitationSentEventSavedWithSameIdPutLastNumberIncreased(
+        public async Task SendInvitation_SendNewInvitationToSameMemberAfterCancelOrReject_NewInvitationSentEventSaved(
            string accountId,
            string subscriptionId,
            string memberId,
            string UserId)
         {
-            var client = new Invitations.InvitationsClient(_factory.CreateGrpcChannel());
+            var client = new Members.MembersClient(_factory.CreateGrpcChannel());
 
             var firstSendRequest = new SendInvitationRequest
             {
@@ -171,11 +163,11 @@ namespace Anis.MembersManagment.Command.Test.InvitationsServiceTests.Send
 
             using var scope = _factory.Services.CreateScope();
             var eventsStore = scope.ServiceProvider.GetRequiredService<IEventStore>();
-            var events = await eventsStore.GetAllLikeAsync($"{subscriptionId}_{memberId}", new CancellationToken());
+            var events = await eventsStore.GetAllAsync($"{subscriptionId}_{memberId}", new CancellationToken());
 
             Assert.Equal(3,events.Count);
-            Assert.Equal($"{subscriptionId}_{memberId}_1", firstSendResponse.Id);
-            Assert.Equal($"{subscriptionId}_{memberId}_2", secondSendResponse.Id);
+            Assert.Equal($"{subscriptionId}_{memberId}", firstSendResponse.Id);
+            Assert.Equal($"{subscriptionId}_{memberId}", secondSendResponse.Id);
         }
 
     }

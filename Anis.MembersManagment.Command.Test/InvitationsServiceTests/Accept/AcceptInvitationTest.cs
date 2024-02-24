@@ -1,21 +1,13 @@
-﻿using Azure.Core;
-using Microsoft.Azure.Amqp.Framing;
-using Microsoft.Identity.Client;
-using System;
+﻿using Anis.MembersManagment.Command.Test.MembersProto;
 
 namespace Anis.MembersManagment.Command.Test.InvitationsServiceTests.Accept
 {
-    public class AcceptInvitationTest : IClassFixture<WebApplicationFactory<Program>>
+    public class AcceptInvitationTest(WebApplicationFactory<Program> factory, ITestOutputHelper helper) : IClassFixture<WebApplicationFactory<Program>>
     {
-        private readonly WebApplicationFactory<Program> _factory;
-
-        public AcceptInvitationTest(WebApplicationFactory<Program> factory, ITestOutputHelper helper)
-        {
-            _factory = factory.WithDefaultConfigurations(helper, services =>
+        private readonly WebApplicationFactory<Program> _factory = factory.WithDefaultConfigurations(helper, services =>
             {
                 services.ReplaceWithInMemoryDatabase();
             });
-        }
 
         [Theory]
         [InlineData("accountId", "SubscriptionId", "MemberId", "UserId")]
@@ -26,7 +18,7 @@ namespace Anis.MembersManagment.Command.Test.InvitationsServiceTests.Accept
             string UserId
             )
         {
-            var client = new Invitations.InvitationsClient(_factory.CreateGrpcChannel());
+            var client = new Members.MembersClient(_factory.CreateGrpcChannel());
 
             var sendRequest = new SendInvitationRequest
             {
@@ -70,7 +62,7 @@ namespace Anis.MembersManagment.Command.Test.InvitationsServiceTests.Accept
             string MemberId,
             string UserId)
         {
-            var client = new Invitations.InvitationsClient(_factory.CreateGrpcChannel());
+            var client = new Members.MembersClient(_factory.CreateGrpcChannel());
 
             var sendRequest = new SendInvitationRequest
             {
@@ -112,7 +104,7 @@ namespace Anis.MembersManagment.Command.Test.InvitationsServiceTests.Accept
           string MemberId,
           string UserId)
         {
-            var client = new Invitations.InvitationsClient(_factory.CreateGrpcChannel());
+            var client = new Members.MembersClient(_factory.CreateGrpcChannel());
 
             var sendRequest = new SendInvitationRequest
             {

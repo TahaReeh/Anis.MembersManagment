@@ -3,7 +3,7 @@ using Anis.MembersManagment.Command.Commands.CancelInvitation;
 using Anis.MembersManagment.Command.Commands.RejectInvitation;
 using Anis.MembersManagment.Command.Commands.SendInvitation;
 using Anis.MembersManagment.Command.Domain;
-using Anis.MembersManagment.Command.InvitationsProto;
+using Anis.MembersManagment.Command.MembersProto;
 
 namespace Anis.MembersManagment.Command.Extensions
 {

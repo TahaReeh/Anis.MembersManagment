@@ -17,17 +17,11 @@ namespace Anis.MembersManagment.Command.Commands.AcceptInvitation
             if (events.Count == 0)
                 throw new NotFoundException("Invitation not found");
 
-            if (events.Last().Type is "InvitationAccepted") //or "MemberJoined"
-                throw new RpcException(new Status(StatusCode.InvalidArgument, "The member already exists in this subscription"));
+            var member = Member.LoadFromHistory(events);
 
-            if (events.Last().Type is "InvitationCancelled" or "InvitationRejected")
-                throw new RpcException(new Status(StatusCode.InvalidArgument, "This invitation is invalid"));
+            member.AcceptInvitation(command);
 
-            var invitation = Invitation.LoadFromHistory(events);
-
-            invitation.AcceptInvitation(command);
-
-            await _eventStore.CommitAsync(invitation, cancellationToken);
+            await _eventStore.CommitAsync(member, cancellationToken);
 
             return command.Id;
         }
