@@ -1,6 +1,7 @@
 ﻿using Anis.MembersManagment.Command.Abstractions;
 using Anis.MembersManagment.Command.Commands.AcceptInvitation;
 using Anis.MembersManagment.Command.Commands.CancelInvitation;
+using Anis.MembersManagment.Command.Commands.JoinMember;
 using Anis.MembersManagment.Command.Commands.RejectInvitation;
 using Anis.MembersManagment.Command.Commands.SendInvitation;
 using Anis.MembersManagment.Command.Events;
@@ -11,6 +12,7 @@ namespace Anis.MembersManagment.Command.Domain
 {
     public class Member : Aggregate<Member>, IAggregate
     {
+        #region Invitation
         public void SendInvitation(SendInvitationCommand command)
         {
             if (HasInvitationPending)
@@ -39,6 +41,19 @@ namespace Anis.MembersManagment.Command.Domain
             ApplyNewChange(command.ToEvent(NextSequence));
         }
 
+        #endregion
+
+        #region Member
+        public void JoinMember(JoinMemberCommand command)
+        {
+            if (IsJoined)
+                throw new RpcException(new Status(StatusCode.InvalidArgument, "The member already exists in this subscription"));
+
+            ApplyNewChange(command.ToEvent(NextSequence));
+        }
+
+        #endregion
+
         public bool IsJoined { get; private set; }
         public bool HasInvitationPending { get; private set; }
 
@@ -56,6 +71,9 @@ namespace Anis.MembersManagment.Command.Domain
                     Mutate(e);
                     break;
                 case InvitationCancelled e:
+                    Mutate(e);
+                    break;
+                case MemberJoined e:
                     Mutate(e);
                     break;
             }
@@ -84,6 +102,13 @@ namespace Anis.MembersManagment.Command.Domain
             IsJoined = false;
             HasInvitationPending = false;
         }
+
+        public void Mutate(MemberJoined _)
+        {
+            IsJoined = true;
+            HasInvitationPending = false;
+        }
+
 
         private void ValidateRequest()
         {

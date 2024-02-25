@@ -35,10 +35,11 @@
 
             using var scope = _factory.Services.CreateScope();
             var eventsStore = scope.ServiceProvider.GetRequiredService<IEventStore>();
-            var events = await eventsStore.GetAllLikeAsync($"{request.SubscriptionId}_{request.MemberId}", new CancellationToken());
+            var events = await eventsStore.GetAllAsync($"{request.SubscriptionId}_{request.MemberId}", new CancellationToken());
 
             Assert.Single(events);
             Assert.Equal($"{request.SubscriptionId}_{request.MemberId}", response.Id);
+            Assert.Equal(1, events[0].Sequence);
         }
 
 

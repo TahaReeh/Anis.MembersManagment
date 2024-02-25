@@ -1,5 +1,6 @@
 ﻿using Anis.MembersManagment.Command.Commands.AcceptInvitation;
 using Anis.MembersManagment.Command.Commands.CancelInvitation;
+using Anis.MembersManagment.Command.Commands.JoinMember;
 using Anis.MembersManagment.Command.Commands.RejectInvitation;
 using Anis.MembersManagment.Command.Commands.SendInvitation;
 using Anis.MembersManagment.Command.Events;
@@ -8,6 +9,8 @@ namespace Anis.MembersManagment.Command.Extensions
 {
     public static class EventsExtensions
     {
+
+        #region Invitation
         public static InvitationSent ToEvent(this SendInvitationCommand command, int sequence) => new(
          AggregateId: $"{command.SubscriptionId}_{command.MemberId}",
          Sequence: sequence,
@@ -57,5 +60,25 @@ namespace Anis.MembersManagment.Command.Extensions
            UserId: command.UserId,
            Version: 1
            );
+
+        #endregion
+
+        #region Member
+
+        public static MemberJoined ToEvent(this JoinMemberCommand command, int sequence) => new(
+           AggregateId: $"{command.SubscriptionId}_{command.MemberId}",
+           Sequence: sequence,
+           DateTime: DateTime.UtcNow,
+           Data: new MemberJoinedData(
+               AccountId: command.AccountId,
+               SubscriptionId: command.SubscriptionId,
+               MemberId: command.MemberId,
+               Permissions: command.Permissions
+               ),
+           UserId: command.UserId,
+           Version: 1
+           );
+
+        #endregion
     }
 }

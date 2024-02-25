@@ -17,6 +17,7 @@ namespace Anis.MembersManagment.Command.Infrastructure.Persistence
             modelBuilder.ApplyConfiguration(new GenericEventConfiguration<InvitationAccepted, InvitationAcceptedData>());
             modelBuilder.ApplyConfiguration(new GenericEventConfiguration<InvitationCancelled, InvitationCancelledData>());
             modelBuilder.ApplyConfiguration(new GenericEventConfiguration<InvitationRejected, InvitationRejectedData>());
+            modelBuilder.ApplyConfiguration(new GenericEventConfiguration<MemberJoined, MemberJoinedData>());
         }
     }
 }

@@ -9,6 +9,7 @@ namespace Anis.MembersManagment.Command.Services
     {
         private readonly IMediator _mediator = mediator;
 
+        #region Invitations
         public override async Task<Response> SendInvitation(SendInvitationRequest request, ServerCallContext context)
         {
             var command = request.ToCommand();
@@ -60,5 +61,22 @@ namespace Anis.MembersManagment.Command.Services
                 Message = "Invitation rejected"
             };
         }
+
+        #endregion
+
+        #region Members
+        public override async Task<Response> JoinMember(JoinMemberRequest request, ServerCallContext context)
+        {
+            var command = request.ToCommand();
+
+            var response = await _mediator.Send(command);
+
+            return new Response()
+            {
+                Id = response,
+                Message  = ""
+            };
+        }
+        #endregion
     }
 }

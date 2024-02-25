@@ -1,5 +1,6 @@
 ﻿using Anis.MembersManagment.Command.Commands.AcceptInvitation;
 using Anis.MembersManagment.Command.Commands.CancelInvitation;
+using Anis.MembersManagment.Command.Commands.JoinMember;
 using Anis.MembersManagment.Command.Commands.RejectInvitation;
 using Anis.MembersManagment.Command.Commands.SendInvitation;
 using Anis.MembersManagment.Command.Domain;
@@ -51,6 +52,21 @@ namespace Anis.MembersManagment.Command.Extensions
                 SubscriptionId = request.SubscriptionId,
                 MemberId = request.MemberId,
                 UserId = request.UserId
+            };
+
+        public static JoinMemberCommand ToCommand(this JoinMemberRequest request)
+            => new()
+            {
+                AccountId = request.AccountId,
+                SubscriptionId = request.SubscriptionId,
+                MemberId = request.MemberId,
+                UserId = request.UserId,
+                Permissions = new Permission
+                {
+                    Transfer = request.Permissions.Transfer,
+                    PurchaseCards = request.Permissions.PurchaseCards,
+                    ManageDevices = request.Permissions.ManageDevices
+                }
             };
     }
 }
