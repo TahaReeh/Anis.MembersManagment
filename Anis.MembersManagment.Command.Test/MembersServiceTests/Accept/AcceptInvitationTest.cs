@@ -1,6 +1,8 @@
-﻿namespace Anis.MembersManagment.Command.Test.InvitationsServiceTests.Cancel
+﻿using Anis.MembersManagment.Command.Test.MembersProto;
+
+namespace Anis.MembersManagment.Command.Test.MembersServiceTests.Accept
 {
-    public class CancelInvitationTest(WebApplicationFactory<Program> factory, ITestOutputHelper helper) : IClassFixture<WebApplicationFactory<Program>>
+    public class AcceptInvitationTest(WebApplicationFactory<Program> factory, ITestOutputHelper helper) : IClassFixture<WebApplicationFactory<Program>>
     {
         private readonly WebApplicationFactory<Program> _factory = factory.WithDefaultConfigurations(helper, services =>
             {
@@ -9,11 +11,12 @@
 
         [Theory]
         [InlineData("accountId", "SubscriptionId", "MemberId", "UserId")]
-        public async Task CancelInvitation_SendValidRequestWhenPendingInvitationExists_InvitationCanclledEventSaved(
-          string accountId,
-          string SubscriptionId,
-          string MemberId,
-          string UserId)
+        public async Task AcceptInvitation_SendValidRequestWhenPendingInvitationExists_InvitationAcceptedEventSaved(
+            string accountId,
+            string SubscriptionId,
+            string MemberId,
+            string UserId
+            )
         {
             var client = new Members.MembersClient(_factory.CreateGrpcChannel());
 
@@ -33,7 +36,7 @@
 
             var sendResponse = await client.SendInvitationAsync(sendRequest);
 
-            var cancelRequest = new CancelInvitationRequest
+            var acceptRequest = new AcceptInvitationRequest
             {
                 Id = sendResponse.Id,
                 AccountId = accountId,
@@ -42,7 +45,7 @@
                 UserId = UserId,
             };
 
-            await client.CancelInvitationAsync(cancelRequest);
+            await client.AcceptInvitationAsync(acceptRequest);
 
             using var scope = _factory.Services.CreateScope();
             var eventsStore = scope.ServiceProvider.GetRequiredService<IEventStore>();
@@ -53,7 +56,49 @@
 
         [Theory]
         [InlineData("accountId", "SubscriptionId", "MemberId", "UserId")]
-        public async Task CancelInvitation_CancelInvitationWhenIsRejectedOrCancelled_ThrowsInvalidArgumentRpcException(
+        public async Task AcceptInvitation_AcceptInvitationHasBeenAlreadyAccepted_ThrowsInvalidArgumentRpcException(
+            string accountId,
+            string SubscriptionId,
+            string MemberId,
+            string UserId)
+        {
+            var client = new Members.MembersClient(_factory.CreateGrpcChannel());
+
+            var sendRequest = new SendInvitationRequest
+            {
+                AccountId = accountId,
+                SubscriptionId = SubscriptionId,
+                MemberId = MemberId,
+                UserId = UserId,
+                Permissions = new Permissions
+                {
+                    Transfer = true,
+                    PurchaseCards = false,
+                    ManageDevices = false
+                }
+            };
+
+            var sendResponse = await client.SendInvitationAsync(sendRequest);
+
+            var acceptRequest = new AcceptInvitationRequest
+            {
+                Id = sendResponse.Id,
+                AccountId = accountId,
+                SubscriptionId = SubscriptionId,
+                MemberId = MemberId,
+                UserId = UserId,
+            };
+
+            await client.AcceptInvitationAsync(acceptRequest);
+
+            var exception = await Assert.ThrowsAsync<RpcException>(async () => await client.AcceptInvitationAsync(acceptRequest));
+
+            Assert.Equal(StatusCode.InvalidArgument, exception.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("accountId", "SubscriptionId", "MemberId", "UserId")]
+        public async Task AcceptInvitation_AcceptInvitationHasBeenCancelledOrRejected_ThrowsInvalidArgumentRpcException(
           string accountId,
           string SubscriptionId,
           string MemberId,
@@ -88,10 +133,18 @@
 
             await client.CancelInvitationAsync(cancelRequest);
 
-            var exception = await Assert.ThrowsAsync<RpcException>(async () => await client.CancelInvitationAsync(cancelRequest));
+            var acceptRequest = new AcceptInvitationRequest
+            {
+                Id = sendResponse.Id,
+                AccountId = accountId,
+                SubscriptionId = SubscriptionId,
+                MemberId = MemberId,
+                UserId = UserId,
+            };
+
+            var exception = await Assert.ThrowsAsync<RpcException>(async () => await client.AcceptInvitationAsync(acceptRequest));
 
             Assert.Equal(StatusCode.InvalidArgument, exception.StatusCode);
         }
-
     }
 }

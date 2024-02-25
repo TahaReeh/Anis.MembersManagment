@@ -1,4 +1,4 @@
-﻿namespace Anis.MembersManagment.Command.Test.InvitationsServiceTests.Reject
+﻿namespace Anis.MembersManagment.Command.Test.MembersServiceTests.Reject
 {
     public class RejectInvitationTest(WebApplicationFactory<Program> factory, ITestOutputHelper helper) : IClassFixture<WebApplicationFactory<Program>>
     {

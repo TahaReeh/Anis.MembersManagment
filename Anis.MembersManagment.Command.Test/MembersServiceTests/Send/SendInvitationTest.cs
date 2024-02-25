@@ -1,4 +1,4 @@
-﻿namespace Anis.MembersManagment.Command.Test.InvitationsServiceTests.Send
+﻿namespace Anis.MembersManagment.Command.Test.MembersServiceTests.Send
 {
     public class SendInvitationTest(WebApplicationFactory<Program> factory, ITestOutputHelper helper) : IClassFixture<WebApplicationFactory<Program>>
     {

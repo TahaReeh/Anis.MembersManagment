@@ -11,6 +11,10 @@ service Members {
   rpc AcceptInvitation (AcceptInvitationRequest) returns (Response);
   rpc RejectInvitation (RejectInvitationRequest) returns (Response);
 
+  rpc JoinMember (JoinMemberRequest) returns (Response);
+  rpc RemoveMember (RemoveMemberRequest) returns (Response);
+  rpc Leave (LeaveRequest) returns (Response);
+  rpc ChangePermission (ChangePermissionRequest) returns (Response);
 }
 
 message SendInvitationRequest {
@@ -19,12 +23,6 @@ message SendInvitationRequest {
   string member_id = 3;
   string user_id = 4;
   Permissions permissions = 5;
-}
-
-message Permissions{
-  bool Transfer = 1;
-  bool PurchaseCards = 2;
-  bool ManageDevices = 3;
 }
 
 message CancelInvitationRequest {
@@ -51,7 +49,46 @@ message RejectInvitationRequest {
   string user_id = 5;
 }
 
+message JoinMemberRequest {
+  string account_id = 1;
+  string subscription_id = 2;
+  string member_id = 3;
+  string user_id = 4;
+  Permissions permissions = 5;
+}
+
+message RemoveMemberRequest{
+  string id = 1;
+  string account_id = 2;
+  string subscription_id = 3;
+  string member_id = 4;
+  string user_id = 5;
+}
+
+message LeaveRequest {
+  string id = 1;
+  string account_id = 2;
+  string subscription_id = 3;
+  string member_id = 4;
+  string user_id = 5;
+}
+
+message ChangePermissionRequest {
+  string id = 1;
+  string account_id = 2;
+  string subscription_id = 3;
+  string member_id = 4;
+  string user_id = 5;
+  Permissions permissions = 6;
+}
+
 message Response {
   string id = 1;
   string message = 2;
+}
+
+message Permissions{
+  bool Transfer = 1;
+  bool PurchaseCards = 2;
+  bool ManageDevices = 3;
 }
