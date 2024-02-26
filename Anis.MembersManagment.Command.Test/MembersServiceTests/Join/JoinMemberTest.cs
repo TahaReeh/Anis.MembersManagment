@@ -38,5 +38,11 @@ namespace Anis.MembersManagment.Command.Test.MembersServiceTests.Join
             Assert.Equal($"{request.SubscriptionId}_{request.MemberId}", response.Id);
             Assert.Equal(1, events[0].Sequence);
         }
+
+        [Fact]
+        public async Task JoinMember_SendJoinRequestWhileMemberAlreadyJoined_ThrowsInvalidArgumentRpcException()
+        {
+            var client = new Members.MembersClient(_factory.CreateGrpcChannel());
+        }
     }
 }

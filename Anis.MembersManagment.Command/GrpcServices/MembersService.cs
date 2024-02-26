@@ -3,7 +3,7 @@ using Anis.MembersManagment.Command.MembersProto;
 using Grpc.Core;
 using MediatR;
 
-namespace Anis.MembersManagment.Command.Services
+namespace Anis.MembersManagment.Command.GrpcServices
 {
     public class MembersService(IMediator mediator) : Members.MembersBase
     {
