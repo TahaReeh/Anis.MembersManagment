@@ -74,7 +74,20 @@ namespace Anis.MembersManagment.Command.GrpcServices
             return new Response()
             {
                 Id = response,
-                Message  = ""
+                Message  = "Member joined successfully"
+            };
+        }
+
+        public override async Task<Response> RemoveMember(RemoveMemberRequest request, ServerCallContext context)
+        {
+            var command = request.ToCommand();
+
+            var response = await _mediator.Send(command);
+
+            return new Response()
+            {
+                Id = response,
+                Message = "Member removed"
             };
         }
         #endregion

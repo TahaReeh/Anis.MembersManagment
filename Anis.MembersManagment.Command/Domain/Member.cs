@@ -3,6 +3,7 @@ using Anis.MembersManagment.Command.Commands.AcceptInvitation;
 using Anis.MembersManagment.Command.Commands.CancelInvitation;
 using Anis.MembersManagment.Command.Commands.JoinMember;
 using Anis.MembersManagment.Command.Commands.RejectInvitation;
+using Anis.MembersManagment.Command.Commands.RemoveMember;
 using Anis.MembersManagment.Command.Commands.SendInvitation;
 using Anis.MembersManagment.Command.Events;
 using Anis.MembersManagment.Command.Extensions;
@@ -19,7 +20,7 @@ namespace Anis.MembersManagment.Command.Domain
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Invitation still pending"));
 
             if (IsJoined)
-                throw new RpcException(new Status(StatusCode.InvalidArgument, "The member already exists in this subscription"));
+                throw new RpcException(new Status(StatusCode.AlreadyExists, "The member already exists in this subscription"));
 
             ApplyNewChange(command.ToEvent(NextSequence));
         }
@@ -47,11 +48,18 @@ namespace Anis.MembersManagment.Command.Domain
         public void JoinMember(JoinMemberCommand command)
         {
             if (IsJoined)
-                throw new RpcException(new Status(StatusCode.InvalidArgument, "The member already exists in this subscription"));
+                throw new RpcException(new Status(StatusCode.AlreadyExists, "The member already exists in this subscription"));
 
             ApplyNewChange(command.ToEvent(NextSequence));
         }
 
+        public void RemoveMember(RemoveMemberCommand command)
+        {
+            if (!IsJoined)
+                throw new RpcException(new Status(StatusCode.NotFound, "There is no such member in this subscription"));
+
+            ApplyNewChange(command.ToEvent(NextSequence));
+        }
         #endregion
 
         public bool IsJoined { get; private set; }
@@ -74,6 +82,9 @@ namespace Anis.MembersManagment.Command.Domain
                     Mutate(e);
                     break;
                 case MemberJoined e:
+                    Mutate(e);
+                    break;
+                case MemberRemoved e:
                     Mutate(e);
                     break;
             }
@@ -109,11 +120,16 @@ namespace Anis.MembersManagment.Command.Domain
             HasInvitationPending = false;
         }
 
+        public void Mutate(MemberRemoved _)
+        {
+            IsJoined = false;
+            HasInvitationPending = false;
+        }
 
         private void ValidateRequest()
         {
             if (IsJoined)
-                throw new RpcException(new Status(StatusCode.InvalidArgument, "The member already exists in this subscription"));
+                throw new RpcException(new Status(StatusCode.AlreadyExists, "The member already exists in this subscription"));
 
             if (!HasInvitationPending && !IsJoined)
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "This invitation is invalid"));

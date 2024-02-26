@@ -41,7 +41,7 @@ namespace Anis.MembersManagment.Command.Test.MembersServiceTests.Join
         }
 
         [Fact]
-        public async Task JoinMember_SendJoinRequestWhileMemberAlreadyJoined_ThrowsInvalidArgumentRpcException()
+        public async Task JoinMember_SendJoinRequestWhileMemberAlreadyJoined_ThrowsAlreadyExistsRpcException()
         {
             var client = new Members.MembersClient(_factory.CreateGrpcChannel());
 
@@ -63,7 +63,7 @@ namespace Anis.MembersManagment.Command.Test.MembersServiceTests.Join
 
             var exception = await Assert.ThrowsAsync<RpcException>(async () => await client.JoinMemberAsync(request));
 
-            Assert.Equal(StatusCode.InvalidArgument, exception.StatusCode);
+            Assert.Equal(StatusCode.AlreadyExists, exception.StatusCode);
         }
 
         [Theory]

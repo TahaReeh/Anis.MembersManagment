@@ -2,6 +2,7 @@
 using Anis.MembersManagment.Command.Commands.CancelInvitation;
 using Anis.MembersManagment.Command.Commands.JoinMember;
 using Anis.MembersManagment.Command.Commands.RejectInvitation;
+using Anis.MembersManagment.Command.Commands.RemoveMember;
 using Anis.MembersManagment.Command.Commands.SendInvitation;
 using Anis.MembersManagment.Command.Events;
 
@@ -78,6 +79,19 @@ namespace Anis.MembersManagment.Command.Extensions
            UserId: command.UserId,
            Version: 1
            );
+
+
+        public static MemberRemoved ToEvent(this RemoveMemberCommand command, int sequence) => new(
+           AggregateId: command.Id,
+           Sequence: sequence,
+           DateTime: DateTime.UtcNow,
+           Data: new MemberRemovedData(
+               AccountId: command.AccountId,
+               SubscriptionId: command.SubscriptionId,
+               MemberId: command.MemberId),
+           UserId: command.UserId,
+           Version: 1
+            );
 
         #endregion
     }

@@ -56,7 +56,7 @@ namespace Anis.MembersManagment.Command.Test.MembersServiceTests.Accept
 
         [Theory]
         [InlineData("accountId", "SubscriptionId", "MemberId", "UserId")]
-        public async Task AcceptInvitation_AcceptInvitationHasBeenAlreadyAccepted_ThrowsInvalidArgumentRpcException(
+        public async Task AcceptInvitation_AcceptInvitationHasBeenAlreadyAccepted_ThrowsAlreadyExistsRpcException(
             string accountId,
             string SubscriptionId,
             string MemberId,
@@ -93,7 +93,7 @@ namespace Anis.MembersManagment.Command.Test.MembersServiceTests.Accept
 
             var exception = await Assert.ThrowsAsync<RpcException>(async () => await client.AcceptInvitationAsync(acceptRequest));
 
-            Assert.Equal(StatusCode.InvalidArgument, exception.StatusCode);
+            Assert.Equal(StatusCode.AlreadyExists, exception.StatusCode);
         }
 
         [Theory]
