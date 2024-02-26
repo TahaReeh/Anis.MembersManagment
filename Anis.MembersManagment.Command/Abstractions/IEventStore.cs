@@ -7,6 +7,6 @@ namespace Anis.MembersManagment.Command.Abstractions
     {
         Task<List<Event>> GetAllAsync(string aggregateId, CancellationToken cancellationToken);
         Task<List<Event>> GetAllLikeAsync(string aggregateId, CancellationToken cancellationToken);
-        Task CommitAsync(Member member, CancellationToken cancellationToken);
+        Task CommitAsync(IAggregate aggregate, CancellationToken cancellationToken);
     }
 }
