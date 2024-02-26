@@ -15,7 +15,7 @@ Log.Logger = LoggerServiceBuilder.Build();
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddGrpc();
+builder.Services.AddGrpcWithValidators();
 builder.Services.AddMediatR(o => o.RegisterServicesFromAssemblyContaining<Program>());
 builder.Services.AddDbContext<ApplicationDbContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("Database")));
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Azure.Amqp.Framing;
+using System;
 
 namespace Anis.MembersManagment.Command.Test.MembersServiceTests.Join
 {
@@ -43,6 +44,58 @@ namespace Anis.MembersManagment.Command.Test.MembersServiceTests.Join
         public async Task JoinMember_SendJoinRequestWhileMemberAlreadyJoined_ThrowsInvalidArgumentRpcException()
         {
             var client = new Members.MembersClient(_factory.CreateGrpcChannel());
+
+            var request = new JoinMemberRequest
+            {
+                AccountId = Guid.NewGuid().ToString(),
+                SubscriptionId = Guid.NewGuid().ToString(),
+                MemberId = Guid.NewGuid().ToString(),
+                UserId = Guid.NewGuid().ToString(),
+                Permissions = new Permissions
+                {
+                    Transfer = true,
+                    PurchaseCards = false,
+                    ManageDevices = false
+                }
+            };
+
+            await client.JoinMemberAsync(request);
+
+            var exception = await Assert.ThrowsAsync<RpcException>(async () => await client.JoinMemberAsync(request));
+
+            Assert.Equal(StatusCode.InvalidArgument, exception.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("","","","")]
+        [InlineData(" "," "," "," ")]
+        [InlineData("ValidAccountId", "ValidSubscriptionId", "ValidMemberId", "")]
+        public async Task JoinMember_SendInvalidRequestData_ThrowsInvalidArgumentRpcException(
+            string accountId,
+            string subscriptionId,
+            string memberId,
+            string userId)
+        {
+            var client = new Members.MembersClient(_factory.CreateGrpcChannel());
+
+            var request = new JoinMemberRequest
+            {
+                AccountId = accountId,
+                SubscriptionId = subscriptionId,
+                MemberId = memberId,
+                UserId = userId,
+                Permissions = new Permissions
+                {
+                    Transfer = true,
+                    PurchaseCards = false,
+                    ManageDevices = false
+                }
+            };
+
+            var exception = await Assert.ThrowsAsync<RpcException>(async () => await client.JoinMemberAsync(request));
+
+            Assert.Equal(StatusCode.InvalidArgument, exception.StatusCode);
+
         }
     }
 }
