@@ -1,6 +1,7 @@
 ﻿using Anis.MembersManagment.Command.Commands.AcceptInvitation;
 using Anis.MembersManagment.Command.Commands.CancelInvitation;
 using Anis.MembersManagment.Command.Commands.JoinMember;
+using Anis.MembersManagment.Command.Commands.Leave;
 using Anis.MembersManagment.Command.Commands.RejectInvitation;
 using Anis.MembersManagment.Command.Commands.RemoveMember;
 using Anis.MembersManagment.Command.Commands.SendInvitation;
@@ -78,6 +79,16 @@ namespace Anis.MembersManagment.Command.Extensions
                 SubscriptionId = request.SubscriptionId,
                 MemberId = request.MemberId,
                 UserId = request.UserId
+            };
+
+        public static LeaveCommand ToCommand(this LeaveRequest request)
+            => new()
+            {
+                Id = request.Id,
+                AccountId = request.AccountId,
+                SubscriptionId = request.SubscriptionId,
+                MemberId = request.MemberId,
+                UserId = request.UserId,
             };
     }
 }

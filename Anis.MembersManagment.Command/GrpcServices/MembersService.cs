@@ -90,6 +90,20 @@ namespace Anis.MembersManagment.Command.GrpcServices
                 Message = "Member removed"
             };
         }
+
+        public override async Task<Response> Leave(LeaveRequest request, ServerCallContext context)
+        {
+            var command = request.ToCommand();
+
+            var response = await _mediator.Send(command);
+
+            return new Response()
+            {
+                Id = response,
+                Message = "Member left"
+            };
+        }
+
         #endregion
     }
 }

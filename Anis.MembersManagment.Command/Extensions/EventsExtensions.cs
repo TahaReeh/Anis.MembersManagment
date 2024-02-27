@@ -1,10 +1,14 @@
 ﻿using Anis.MembersManagment.Command.Commands.AcceptInvitation;
 using Anis.MembersManagment.Command.Commands.CancelInvitation;
 using Anis.MembersManagment.Command.Commands.JoinMember;
+using Anis.MembersManagment.Command.Commands.Leave;
 using Anis.MembersManagment.Command.Commands.RejectInvitation;
 using Anis.MembersManagment.Command.Commands.RemoveMember;
 using Anis.MembersManagment.Command.Commands.SendInvitation;
+using Anis.MembersManagment.Command.Domain;
 using Anis.MembersManagment.Command.Events;
+using Microsoft.Azure.Amqp.Framing;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Anis.MembersManagment.Command.Extensions
 {
@@ -86,6 +90,18 @@ namespace Anis.MembersManagment.Command.Extensions
            Sequence: sequence,
            DateTime: DateTime.UtcNow,
            Data: new MemberRemovedData(
+               AccountId: command.AccountId,
+               SubscriptionId: command.SubscriptionId,
+               MemberId: command.MemberId),
+           UserId: command.UserId,
+        Version: 1
+        );
+
+        public static MemberLeft ToEvent(this LeaveCommand command,int sequence) => new(
+           AggregateId: command.Id,
+           Sequence: sequence,
+           DateTime: DateTime.UtcNow,
+           Data: new MemberLeftData(
                AccountId: command.AccountId,
                SubscriptionId: command.SubscriptionId,
                MemberId: command.MemberId),

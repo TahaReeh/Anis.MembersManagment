@@ -2,6 +2,7 @@
 using Anis.MembersManagment.Command.Commands.AcceptInvitation;
 using Anis.MembersManagment.Command.Commands.CancelInvitation;
 using Anis.MembersManagment.Command.Commands.JoinMember;
+using Anis.MembersManagment.Command.Commands.Leave;
 using Anis.MembersManagment.Command.Commands.RejectInvitation;
 using Anis.MembersManagment.Command.Commands.RemoveMember;
 using Anis.MembersManagment.Command.Commands.SendInvitation;
@@ -60,6 +61,15 @@ namespace Anis.MembersManagment.Command.Domain
 
             ApplyNewChange(command.ToEvent(NextSequence));
         }
+
+        public void Leave(LeaveCommand command)
+        {
+            if (!IsJoined)
+                throw new RpcException(new Status(StatusCode.NotFound, "There is no such member in this subscription"));
+
+            ApplyNewChange(command.ToEvent(NextSequence));
+        }
+
         #endregion
 
         public bool IsJoined { get; private set; }
@@ -85,6 +95,9 @@ namespace Anis.MembersManagment.Command.Domain
                     Mutate(e);
                     break;
                 case MemberRemoved e:
+                    Mutate(e);
+                    break;
+                case MemberLeft e:
                     Mutate(e);
                     break;
             }
@@ -121,6 +134,12 @@ namespace Anis.MembersManagment.Command.Domain
         }
 
         public void Mutate(MemberRemoved _)
+        {
+            IsJoined = false;
+            HasInvitationPending = false;
+        }
+
+        public void Mutate(MemberLeft _)
         {
             IsJoined = false;
             HasInvitationPending = false;
