@@ -1,6 +1,7 @@
 ﻿using Anis.MembersManagment.Command.Abstractions;
 using Anis.MembersManagment.Command.Commands.AcceptInvitation;
 using Anis.MembersManagment.Command.Commands.CancelInvitation;
+using Anis.MembersManagment.Command.Commands.ChangePermission;
 using Anis.MembersManagment.Command.Commands.JoinMember;
 using Anis.MembersManagment.Command.Commands.Leave;
 using Anis.MembersManagment.Command.Commands.RejectInvitation;
@@ -66,6 +67,17 @@ namespace Anis.MembersManagment.Command.Domain
         {
             if (!IsJoined)
                 throw new RpcException(new Status(StatusCode.NotFound, "There is no such member in this subscription"));
+
+            ApplyNewChange(command.ToEvent(NextSequence));
+        }
+
+        public void ChangePermission(ChangePermissionCommand command)
+        {
+            if (!IsJoined)
+                throw new RpcException(new Status(StatusCode.NotFound, "There is no such member in this subscription"));
+
+            if (HasInvitationPending)
+                throw new RpcException(new Status(StatusCode.InvalidArgument, "Invitation still pending"));
 
             ApplyNewChange(command.ToEvent(NextSequence));
         }
@@ -144,6 +156,7 @@ namespace Anis.MembersManagment.Command.Domain
             IsJoined = false;
             HasInvitationPending = false;
         }
+
 
         private void ValidateRequest()
         {

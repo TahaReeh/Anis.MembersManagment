@@ -20,6 +20,7 @@ namespace Anis.MembersManagment.Command.Infrastructure.Persistence
             modelBuilder.ApplyConfiguration(new GenericEventConfiguration<MemberJoined, MemberJoinedData>());
             modelBuilder.ApplyConfiguration(new GenericEventConfiguration<MemberRemoved, MemberRemovedData>());
             modelBuilder.ApplyConfiguration(new GenericEventConfiguration<MemberLeft, MemberLeftData>());
+            modelBuilder.ApplyConfiguration(new GenericEventConfiguration<PermissionChanged, PermissionChangedData>());
         }
     }
 }

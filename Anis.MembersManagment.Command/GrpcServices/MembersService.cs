@@ -104,6 +104,18 @@ namespace Anis.MembersManagment.Command.GrpcServices
             };
         }
 
+        public override async Task<Response> ChangePermission(ChangePermissionRequest request, ServerCallContext context)
+        {
+            var command = request.ToCommand();
+
+            var response = await _mediator.Send(command);
+
+            return new Response()
+            {
+                Id = response,
+                Message = "Permissions changed successfully"
+            };
+        }
         #endregion
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Anis.MembersManagment.Command.Commands.AcceptInvitation;
 using Anis.MembersManagment.Command.Commands.CancelInvitation;
+using Anis.MembersManagment.Command.Commands.ChangePermission;
 using Anis.MembersManagment.Command.Commands.JoinMember;
 using Anis.MembersManagment.Command.Commands.Leave;
 using Anis.MembersManagment.Command.Commands.RejectInvitation;
@@ -90,5 +91,21 @@ namespace Anis.MembersManagment.Command.Extensions
                 MemberId = request.MemberId,
                 UserId = request.UserId,
             };
+
+        public static ChangePermissionCommand ToCommand(this ChangePermissionRequest request)
+           => new()
+           {
+               Id = request.Id,
+               AccountId = request.AccountId,
+               SubscriptionId = request.SubscriptionId,
+               MemberId = request.MemberId,
+               UserId = request.UserId,
+               Permissions = new Permission
+               {
+                   Transfer = request.Permissions.Transfer,
+                   PurchaseCards = request.Permissions.PurchaseCards,
+                   ManageDevices = request.Permissions.ManageDevices
+               }
+           };
     }
 }

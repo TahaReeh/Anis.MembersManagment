@@ -1,5 +1,6 @@
 ﻿using Anis.MembersManagment.Command.Commands.AcceptInvitation;
 using Anis.MembersManagment.Command.Commands.CancelInvitation;
+using Anis.MembersManagment.Command.Commands.ChangePermission;
 using Anis.MembersManagment.Command.Commands.JoinMember;
 using Anis.MembersManagment.Command.Commands.Leave;
 using Anis.MembersManagment.Command.Commands.RejectInvitation;
@@ -109,6 +110,19 @@ namespace Anis.MembersManagment.Command.Extensions
            Version: 1
             );
 
+        public static PermissionChanged ToEvent(this ChangePermissionCommand command, int sequence) => new(
+           AggregateId: command.Id,
+           Sequence: sequence,
+           DateTime: DateTime.UtcNow,
+           Data: new PermissionChangedData(
+               AccountId: command.AccountId,
+               SubscriptionId: command.SubscriptionId,
+               MemberId: command.MemberId,
+               Permissions: command.Permissions
+               ),
+           UserId: command.UserId,
+           Version: 1
+            );
         #endregion
     }
 }
