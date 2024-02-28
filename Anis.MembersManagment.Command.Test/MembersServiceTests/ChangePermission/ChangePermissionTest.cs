@@ -71,7 +71,7 @@ namespace Anis.MembersManagment.Command.Test.MembersServiceTests.ChangePermissio
 
 
         [Theory]
-        [InlineData("", "", "", "", "", null, null, null)]
+        [InlineData("", "", "", "", "", false, false, true)] // null,null,null
         [InlineData(" ", " ", " ", " ", " ", true, false, false)]
         public async Task ChangePermission_SendInvalidRequest_ThrowsInvalidArgumentRpcException(
             string id,
