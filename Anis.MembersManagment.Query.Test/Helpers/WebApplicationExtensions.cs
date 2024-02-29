@@ -1,10 +1,13 @@
 ﻿using Grpc.Net.Client;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Events;
+using Xunit.Abstractions;
 
-namespace Anis.MembersManagment.Command.Test.Helpers
+namespace Anis.MembersManagment.Query.Test.Helpers
 {
     public static class WebApplicationExtensions
     {
