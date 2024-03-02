@@ -6,14 +6,9 @@ using MediatR;
 
 namespace Anis.MembersManagment.Command.Commands.Leave
 {
-    public class LeaveCommandHandler : IRequestHandler<LeaveCommand, string>
+    public class LeaveCommandHandler(IEventStore eventStore) : IRequestHandler<LeaveCommand, string>
     {
-        private readonly IEventStore _eventStore;
-
-        public LeaveCommandHandler(IEventStore eventStore)
-        {
-            _eventStore = eventStore;
-        }
+        private readonly IEventStore _eventStore = eventStore;
 
         public async Task<string> Handle(LeaveCommand command, CancellationToken cancellationToken)
         {

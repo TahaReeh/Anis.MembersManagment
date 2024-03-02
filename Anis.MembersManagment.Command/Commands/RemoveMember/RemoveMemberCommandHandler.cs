@@ -5,14 +5,9 @@ using MediatR;
 
 namespace Anis.MembersManagment.Command.Commands.RemoveMember
 {
-    public class RemoveMemberCommandHandler : IRequestHandler<RemoveMemberCommand, string>
+    public class RemoveMemberCommandHandler(IEventStore eventStore) : IRequestHandler<RemoveMemberCommand, string>
     {
-        private readonly IEventStore _eventStore;
-
-        public RemoveMemberCommandHandler(IEventStore eventStore)
-        {
-            _eventStore = eventStore;
-        }
+        private readonly IEventStore _eventStore = eventStore;
 
         public async Task<string> Handle(RemoveMemberCommand command, CancellationToken cancellationToken)
         {

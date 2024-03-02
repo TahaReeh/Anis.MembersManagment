@@ -10,7 +10,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="Protos\members.proto" />
+	  <None Remove="Protos\members.proto" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -38,12 +38,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Protobuf Include="Protos\members.proto">
-			<GrpcServices>Client</GrpcServices>
-		</Protobuf>
-	</ItemGroup>
-
-	<ItemGroup>
 		<Using Include="Xunit" />
 	</ItemGroup>
 
@@ -55,6 +49,10 @@
 		<Folder Include="EventHandlersTests\PermissionChanged\" />
 		<Folder Include="EventHandlersTests\Removed\" />
 		<Folder Include="EventHandlersTests\Rejected\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Protobuf Include="Protos\members.proto" GrpcServices="Client" />
 	</ItemGroup>
 
 </Project>

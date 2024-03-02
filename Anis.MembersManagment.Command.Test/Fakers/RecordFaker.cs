@@ -12,8 +12,9 @@ namespace Anis.MembersManagment.Command.Test.Fakers
 
         private static T Initialize()
         {
-            return FormatterServices.GetUninitializedObject(typeof(T)) as T
-                ?? throw new TypeLoadException();
+            //return FormatterServices.GetUninitializedObject(typeof(T)) as T
+            //    ?? throw new TypeLoadException();
+            throw new NotImplementedException();
         }
     }
 }

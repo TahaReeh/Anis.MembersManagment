@@ -4,14 +4,9 @@ using MediatR;
 
 namespace Anis.MembersManagment.Command.Commands.JoinMember
 {
-    public class JoinMemberCommandHandler : IRequestHandler<JoinMemberCommand, string>
+    public class JoinMemberCommandHandler(IEventStore eventStore) : IRequestHandler<JoinMemberCommand, string>
     {
-        private readonly IEventStore _eventStore;
-
-        public JoinMemberCommandHandler(IEventStore eventStore)
-        {
-            _eventStore = eventStore;
-        }
+        private readonly IEventStore _eventStore = eventStore;
 
         public async Task<string> Handle(JoinMemberCommand command, CancellationToken cancellationToken)
         {

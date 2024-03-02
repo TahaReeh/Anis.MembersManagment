@@ -1,10 +1,9 @@
 syntax = "proto3";
 
-option csharp_namespace = "Anis.MembersManagment.Query.MembersProto";
+option csharp_namespace = "Anis.MembersManagment.Query.Test.MembersProto";
 
 package members.query.v1;
 
-import "google/protobuf/wrappers.proto";
 import "google/protobuf/timestamp.proto";
 
 service Members {
@@ -29,8 +28,8 @@ message SubscriberOutput {
    int32 id = 1;
    string subscription_id = 2;
    string subscription_description = 3;
-   string member_id = 4;
-   string member_name = 5;
+   string user_id = 4;
+   string user_name = 5;
    string status = 6;
    google.protobuf.Timestamp joined_at = 7;
 }
@@ -40,19 +39,20 @@ message GetOwnerPendingInvitationsRequest {
 }
 
 message GetOwnerPendingInvitationsResponse {
-	repeated OwnerInvitationOutput invitations = 1;
+	repeated InvitationOutput invitations = 1;
 	int32 page = 2;
     int32 page_size = 3;
     int32 total_results = 4;
 }
 
-message OwnerInvitationOutput {
+message InvitationOutput {
 	int32 id = 1;
 	string subscription_id = 2;
 	string subscription_description = 3;
 	string member_id = 4;
 	string member_name = 5;
-	google.protobuf.Timestamp sent_at = 6;
+	string status = 6;
+	google.protobuf.Timestamp sent_at = 7;
 }
 
 message GetMemberPendingInvitationsRequest {
@@ -60,17 +60,10 @@ message GetMemberPendingInvitationsRequest {
 }
 
 message GetMemberPendingInvitationsResponse {
-	repeated MemberInvitationOutput invitations = 1;
+	repeated InvitationOutput invitations = 1;
 	int32 page = 2;
     int32 page_size = 3;
     int32 total_results = 4;
-}
-
-message MemberInvitationOutput {
-	int32 id = 1;
-	string subscription_id = 2;
-	string subscription_description = 3;
-	google.protobuf.Timestamp sent_at = 6;
 }
 
 message GetMemberSubscriptionsRequest {

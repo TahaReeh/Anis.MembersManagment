@@ -1,9 +1,20 @@
+using Anis.MembersManagment.Query.Abstractions.IRepositories;
+using Anis.MembersManagment.Query.Infrastructure.Persistence;
+using Anis.MembersManagment.Query.Infrastructure.Persistence.Repositories;
+using Anis.MembersManagment.Query.Infrastructure.ServiceBus;
 using Anis.MembersManagment.Query.Services;
+using Azure.Messaging.ServiceBus;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddGrpc();
+builder.Services.AddMediatR(o => o.RegisterServicesFromAssemblyContaining<Program>());
+builder.Services.AddDbContext<ApplicationDbContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("Database")));
+builder.Services.AddSingleton(new ServiceBusClient(builder.Configuration.GetConnectionString("ServiceBus")));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddHostedService<MembersEventsListner>();
 
 var app = builder.Build();
 

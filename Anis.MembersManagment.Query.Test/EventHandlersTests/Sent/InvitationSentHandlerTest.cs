@@ -8,17 +8,18 @@ namespace Anis.MembersManagment.Query.Test.EventHandlersTests.Sent
     {
         private readonly WebApplicationFactory<Program> _factory;
 
-        public InvitationSentHandlerTest(WebApplicationFactory<Program> factory,ITestOutputHelper helper)
+        public InvitationSentHandlerTest(WebApplicationFactory<Program> factory, ITestOutputHelper helper)
         {
-            _factory = factory.WithDefaultConfigurations(helper,services=> {
+            _factory = factory.WithDefaultConfigurations(helper, services =>
+            {
                 services.ReplaceWithInMemoryDatabase();
-                });
+            });
         }
 
         [Fact]
-        public async Task InvitationSent_InvitationSentEventHandled_NewInvitationSaved()
+        public Task InvitationSent_InvitationSentEventHandled_NewInvitationSaved()
         {
-
+            throw new NotImplementedException();
         }
     }
 }
