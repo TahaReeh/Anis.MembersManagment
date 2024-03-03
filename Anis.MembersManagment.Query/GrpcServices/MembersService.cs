@@ -23,7 +23,7 @@ namespace Anis.MembersManagment.Query.Services
 
             var result = await _mediator.Send(query, context.CancellationToken);
 
-            var outputs = result.Subscribers.Select(t => t.ToSubscriberOutput());
+            var outputs = result.Subscribers.Select(s => s.ToSubscriberOutput());
 
             return new GetSubscriptionMembersResponse()
             {
@@ -37,19 +37,55 @@ namespace Anis.MembersManagment.Query.Services
             };
         }
 
-        public override Task<GetOwnerPendingInvitationsResponse> GetOwnerPendingInvitations(GetOwnerPendingInvitationsRequest request, ServerCallContext context)
+        public async override Task<GetOwnerPendingInvitationsResponse> GetOwnerPendingInvitations(GetOwnerPendingInvitationsRequest request, ServerCallContext context)
         {
-            return base.GetOwnerPendingInvitations(request, context);
+            var query = request.ToQuery();
+
+            var result = await _mediator.Send(query, context.CancellationToken);
+
+            var output = result.Invitations.Select(i => i.ToInvitationOutput());
+
+            return new GetOwnerPendingInvitationsResponse()
+            {
+                Page = result.Page,
+                PageSize = result.PageSize,
+                TotalResults = result.TotalResults,
+                Invitations = { output }
+            };
         }
 
-        public override Task<GetMemberPendingInvitationsResponse> GetMemberPendingInvitations(GetMemberPendingInvitationsRequest request, ServerCallContext context)
+        public async override Task<GetMemberPendingInvitationsResponse> GetMemberPendingInvitations(GetMemberPendingInvitationsRequest request, ServerCallContext context)
         {
-            return base.GetMemberPendingInvitations(request, context);
+            var query = request.ToQuery();
+
+            var result = await _mediator.Send(query, context.CancellationToken);
+
+            var output = result.Invitations.Select(i => i.ToInvitationOutput());
+
+            return new GetMemberPendingInvitationsResponse()
+            {
+                Page = result.Page,
+                PageSize = result.PageSize,
+                TotalResults = result.TotalResults,
+                Invitations = { output }
+            };
         }
 
-        public override Task<GetMemberSubscriptionsResponse> GetMemberSubscriptions(GetMemberSubscriptionsRequest request, ServerCallContext context)
+        public async override Task<GetMemberSubscriptionsResponse> GetMemberSubscriptions(GetMemberSubscriptionsRequest request, ServerCallContext context)
         {
-            return base.GetMemberSubscriptions(request, context);
+            var query = request.ToQuery();
+
+            var result = await _mediator.Send(query, context.CancellationToken);
+
+            var output = result.Subscribers.Select(s => s.ToSubscriberOutput());
+
+            return new GetMemberSubscriptionsResponse()
+            {
+                Page = result.Page,
+                PageSize = result.PageSize,
+                TotalResults = result.TotalResults,
+                Subscribers = { output }
+            };
         }
     }
 }

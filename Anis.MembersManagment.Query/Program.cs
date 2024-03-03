@@ -1,24 +1,19 @@
-using Anis.MembersManagment.Query.Abstractions.IRepositories;
-using Anis.MembersManagment.Query.GrpcServices.Interceptors;
-using Anis.MembersManagment.Query.Infrastructure.Persistence;
-using Anis.MembersManagment.Query.Infrastructure.Persistence.Repositories;
-using Anis.MembersManagment.Query.Infrastructure.ServiceBus;
+using Anis.MembersManagment.Query.ServiceExtensions;
 using Anis.MembersManagment.Query.Services;
-using Azure.Messaging.ServiceBus;
-using Microsoft.EntityFrameworkCore;
+using Serilog;
+
+Log.Logger = LoggerServiceBuilder.Build();
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddGrpc(options =>
-{
-    options.Interceptors.Add<ApplicationExceptionInterceptor>();
-});
+builder.Services.AddGrpcWithValidators();
+builder.Services.AddEntityFramework(builder.Configuration);
 builder.Services.AddMediatR(o => o.RegisterServicesFromAssemblyContaining<Program>());
-builder.Services.AddDbContext<ApplicationDbContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("Database")));
-builder.Services.AddSingleton<MembersServiceBus>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddHostedService<MembersEventsListner>();
+builder.Services.AddServiceBus();
+builder.Services.AddHostedServices();
+
+builder.Host.UseSerilog();
 
 var app = builder.Build();
 

@@ -1,4 +1,5 @@
 ﻿using Anis.MembersManagment.Query.Abstractions.IRepositories;
+using Anis.MembersManagment.Query.Exceptions;
 using MediatR;
 
 namespace Anis.MembersManagment.Query.QueryHandlers.SubscriptionMembers
@@ -18,6 +19,9 @@ namespace Anis.MembersManagment.Query.QueryHandlers.SubscriptionMembers
                   includeProperties: "Subscription,User",
                   request.Page, request.Size
                   );
+
+            if (!subscribers.Any())
+                throw new NotFoundException("There are no members in this subscription");
 
             return new SubscriptionMembersResult(
                 Page: request.Page,

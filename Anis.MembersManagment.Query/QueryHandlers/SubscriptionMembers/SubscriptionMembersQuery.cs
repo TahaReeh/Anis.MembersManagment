@@ -6,8 +6,5 @@ namespace Anis.MembersManagment.Query.QueryHandlers.SubscriptionMembers
         string SubscriptionId,
         int Page,
         int Size
-        ) : IRequest<SubscriptionMembersResult>
-    {
-        public int Skip => (Page -1) * Size;
-    }
+        ) : IRequest<SubscriptionMembersResult>;
 }

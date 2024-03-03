@@ -16,5 +16,17 @@ namespace Anis.MembersManagment.Query.Extensions
                 Status = subscriber.Status,
                 JoinedAt = subscriber.JoinedAt.ToUtcTimestamp()
             };
+
+        public static InvitationOutput ToInvitationOutput(this Invitation invitation) =>
+            new()
+            {
+                Id = invitation.Id,
+                SubscriptionId = invitation.SubscriptionId,
+                SubscriptionDescription = invitation.Subscription!.Description,
+                MemberId = invitation.UserId,
+                MemberName = invitation.User!.Name,
+                Status = invitation.Status,
+                SentAt = invitation.SentAt.ToUtcTimestamp()
+            };
     }
 }
