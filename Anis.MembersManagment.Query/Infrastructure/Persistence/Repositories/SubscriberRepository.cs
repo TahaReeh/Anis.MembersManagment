@@ -18,5 +18,15 @@ namespace Anis.MembersManagment.Query.Infrastructure.Persistence.Repositories
                 subscriber.ChangeStatus(entity);
             }
         }
+
+        public async Task IncrementSequenceAsync(Subscriber entity)
+        {
+
+            var subscriber = await _context.Subscribers.FirstOrDefaultAsync(s => s.Id == entity.Id);
+            if (subscriber != null)
+            {
+                subscriber.IncrementSequence();
+            }
+        }
     }
 }

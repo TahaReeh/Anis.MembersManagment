@@ -81,5 +81,7 @@ namespace Anis.MembersManagment.Query.Entities
             Status = entity.Status;
             JoinedAt = entity.JoinedAt; // should only change in joined and accepted events
         }
+
+        public void IncrementSequence() => Sequence++;
     }
 }

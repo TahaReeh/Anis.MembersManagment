@@ -1,6 +1,7 @@
 ﻿using Anis.MembersManagment.Query.EventHandlers.Accepted;
 using Anis.MembersManagment.Query.EventHandlers.Cancelled;
 using Anis.MembersManagment.Query.EventHandlers.Changed;
+using Anis.MembersManagment.Query.EventHandlers.IncrementSequence;
 using Anis.MembersManagment.Query.EventHandlers.Joined;
 using Anis.MembersManagment.Query.EventHandlers.Left;
 using Anis.MembersManagment.Query.EventHandlers.Rejected;
@@ -20,11 +21,11 @@ namespace Anis.MembersManagment.Query.Infrastructure.ServiceBus
         private readonly ILogger<MembersEventsListner> _logger;
         private readonly IServiceProvider _serviceProvider;
 
-        public MembersEventsListner(ServiceBusClient client, IConfiguration configuration, ILogger<MembersEventsListner> logger,IServiceProvider serviceProvider)
+        public MembersEventsListner(MembersServiceBus serviceBus, IConfiguration configuration, ILogger<MembersEventsListner> logger,IServiceProvider serviceProvider)
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
-            _processor = client.CreateSessionProcessor(
+            _processor = serviceBus.Client.CreateSessionProcessor(
                 topicName: configuration["taha-member-managment"],
                 subscriptionName: configuration["invitations-subscription"],
                 options: new ServiceBusSessionProcessorOptions()
@@ -38,7 +39,7 @@ namespace Anis.MembersManagment.Query.Infrastructure.ServiceBus
             _processor.ProcessMessageAsync += Processor_ProcessMessageAsync;
             _processor.ProcessErrorAsync += Processor_ProcessErrorAsync;
 
-            _deadLetterProcessor = client.CreateProcessor(
+            _deadLetterProcessor = serviceBus.Client.CreateProcessor(
                 topicName: configuration["taha-member-managment"],
                 subscriptionName: configuration["invitations-subscription"],
                 options: new ServiceBusProcessorOptions()
@@ -53,7 +54,7 @@ namespace Anis.MembersManagment.Query.Infrastructure.ServiceBus
             _deadLetterProcessor.ProcessErrorAsync += DeadLetterProcessor_ProcessErrorAsync;
         }
 
-        private async Task Processor_ProcessMessageAsync(ProcessSessionMessageEventArgs arg)
+        private async Task Processor_ProcessMessageAsync(ProcessSessionMessageEventArgs arg) // convert to generic method to handle deadLetters
         {
             var json = Encoding.UTF8.GetString(arg.Message.Body);
 
@@ -70,7 +71,7 @@ namespace Anis.MembersManagment.Query.Infrastructure.ServiceBus
                 nameof(MemberRemoved) => await mediator.Send(Deserialize<MemberRemoved>(json)),
                 nameof(MemberLeft) => await mediator.Send(Deserialize<MemberLeft>(json)),
                 nameof(PermissionChanged) => await mediator.Send(Deserialize<PermissionChanged>(json)),
-                _ => throw new InvalidOperationException("unknown message type"),
+                _ => await mediator.Send(Deserialize<UnknownEvent>(json)), //should i add to invitation ??
             };
 
             if (isHandled)

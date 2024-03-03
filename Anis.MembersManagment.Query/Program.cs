@@ -1,4 +1,5 @@
 using Anis.MembersManagment.Query.Abstractions.IRepositories;
+using Anis.MembersManagment.Query.GrpcServices.Interceptors;
 using Anis.MembersManagment.Query.Infrastructure.Persistence;
 using Anis.MembersManagment.Query.Infrastructure.Persistence.Repositories;
 using Anis.MembersManagment.Query.Infrastructure.ServiceBus;
@@ -9,10 +10,13 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddGrpc();
+builder.Services.AddGrpc(options =>
+{
+    options.Interceptors.Add<ApplicationExceptionInterceptor>();
+});
 builder.Services.AddMediatR(o => o.RegisterServicesFromAssemblyContaining<Program>());
 builder.Services.AddDbContext<ApplicationDbContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("Database")));
-builder.Services.AddSingleton(new ServiceBusClient(builder.Configuration.GetConnectionString("ServiceBus")));
+builder.Services.AddSingleton<MembersServiceBus>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddHostedService<MembersEventsListner>();
 

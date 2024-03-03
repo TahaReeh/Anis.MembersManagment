@@ -1,5 +1,6 @@
 ﻿using Anis.MembersManagment.Query.Abstractions.IRepositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace Anis.MembersManagment.Query.Infrastructure.Persistence.Repositories
@@ -8,6 +9,7 @@ namespace Anis.MembersManagment.Query.Infrastructure.Persistence.Repositories
     {
         protected readonly ApplicationDbContext _context;
         internal DbSet<T> dbSet;
+        private static readonly char[] separator = [','];
 
         public BaseRepository(ApplicationDbContext context)
         {
@@ -15,7 +17,10 @@ namespace Anis.MembersManagment.Query.Infrastructure.Persistence.Repositories
             dbSet = context.Set<T>();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
+        public async Task<IEnumerable<T>> GetAllAsync(
+            Expression<Func<T, bool>>? filter = null,
+            string? includeProperties = null,
+            int? page = null,int? size = null)
         {
             IQueryable<T> query = dbSet;
             if (filter != null)
@@ -25,10 +30,15 @@ namespace Anis.MembersManagment.Query.Infrastructure.Persistence.Repositories
             if (!string.IsNullOrEmpty(includeProperties))
             {
                 foreach (var property in includeProperties
-                    .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                    .Split(separator, StringSplitOptions.RemoveEmptyEntries))
                 {
                     query = query.Include(property);
                 }
+            }
+
+            if (page is not null && size is not null)
+            {
+                query = query.Skip((page - 1) * size ?? 1).Take(size ?? 1);
             }
 
             return await query.ToListAsync();
@@ -61,11 +71,6 @@ namespace Anis.MembersManagment.Query.Infrastructure.Persistence.Repositories
             }
 
             return await query.FirstOrDefaultAsync();
-        }
-
-        public async Task<IReadOnlyList<T>> GetPagedReponseAsync(int page, int size)
-        {
-            return await dbSet.Skip((page - 1) * size).Take(size).AsNoTracking().ToListAsync();
         }
 
         public Task<bool> ExistsAsync(Expression<Func<T, bool>> filter, CancellationToken cancellationToken) =>
