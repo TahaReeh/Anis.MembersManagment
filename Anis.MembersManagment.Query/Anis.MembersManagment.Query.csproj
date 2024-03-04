@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>be944d9b-412e-408d-9fd3-bb3675451364</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,8 +12,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.17.3" />
+    <PackageReference Include="Calzolari.Grpc.AspNetCore.Validation" Version="8.0.0" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.61.0" />
+    <PackageReference Include="MediatR" Version="12.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.2" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.4.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.4.0" />
   </ItemGroup>
 
 </Project>

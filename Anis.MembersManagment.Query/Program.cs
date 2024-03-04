@@ -1,9 +1,19 @@
+using Anis.MembersManagment.Query.ServiceExtensions;
 using Anis.MembersManagment.Query.Services;
+using Serilog;
+
+Log.Logger = LoggerServiceBuilder.Build();
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddGrpc();
+builder.Services.AddGrpcWithValidators();
+builder.Services.AddEntityFramework(builder.Configuration);
+builder.Services.AddMediatR(o => o.RegisterServicesFromAssemblyContaining<Program>());
+builder.Services.AddServiceBus();
+builder.Services.AddHostedServices();
+
+builder.Host.UseSerilog();
 
 var app = builder.Build();
 

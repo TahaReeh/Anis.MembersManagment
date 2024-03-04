@@ -10,10 +10,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="Protos\members.proto" />
+	  <None Remove="Protos\members.proto" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Bogus" Version="35.4.1" />
+		<PackageReference Include="Calzolari.Grpc.Net.Client.Validation" Version="8.0.0" />
 		<PackageReference Include="coverlet.collector" Version="6.0.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -38,23 +40,20 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Protobuf Include="Protos\members.proto">
-			<GrpcServices>Client</GrpcServices>
-		</Protobuf>
-	</ItemGroup>
-
-	<ItemGroup>
 		<Using Include="Xunit" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="EventHandlersTests\Accepted\" />
-		<Folder Include="EventHandlersTests\Cancelled\" />
-		<Folder Include="EventHandlersTests\Joined\" />
-		<Folder Include="EventHandlersTests\Left\" />
-		<Folder Include="EventHandlersTests\PermissionChanged\" />
-		<Folder Include="EventHandlersTests\Removed\" />
-		<Folder Include="EventHandlersTests\Rejected\" />
+		<Folder Include="HandlersTests\Accepted\" />
+		<Folder Include="HandlersTests\Joined\" />
+		<Folder Include="HandlersTests\Left\" />
+		<Folder Include="HandlersTests\PermissionChanged\" />
+		<Folder Include="HandlersTests\Removed\" />
+		<Folder Include="HandlersTests\Rejected\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Protobuf Include="Protos\members.proto" GrpcServices="Client" />
 	</ItemGroup>
 
 </Project>

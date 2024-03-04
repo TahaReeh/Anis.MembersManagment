@@ -15,9 +15,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Anis.MembersManagment.Comma
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Anis.MembersManagment.Command.Test", "Anis.MembersManagment.Command.Test\Anis.MembersManagment.Command.Test.csproj", "{CA105512-07F1-4717-A149-A69C04028DD7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anis.MembersManagment.Query", "Anis.MembersManagment.Query\Anis.MembersManagment.Query.csproj", "{4001474A-FDB4-48E7-9957-A2946645CE26}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Anis.MembersManagment.Query", "Anis.MembersManagment.Query\Anis.MembersManagment.Query.csproj", "{4001474A-FDB4-48E7-9957-A2946645CE26}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anis.MembersManagment.Query.Test", "Anis.MembersManagment.Query.Test\Anis.MembersManagment.Query.Test.csproj", "{0272E8AC-B7DF-45BE-A029-B3D841209BB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Anis.MembersManagment.Query.Test", "Anis.MembersManagment.Query.Test\Anis.MembersManagment.Query.Test.csproj", "{0272E8AC-B7DF-45BE-A029-B3D841209BB9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{75BF9F26-6D9A-474C-92B5-C5D0EF39FB01}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
