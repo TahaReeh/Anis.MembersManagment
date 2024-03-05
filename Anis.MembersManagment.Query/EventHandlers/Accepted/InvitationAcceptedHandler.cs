@@ -46,16 +46,7 @@ namespace Anis.MembersManagment.Query.EventHandlers.Accepted
                 await _unitOfWork.Subscriber.AddAsync(Subscriber.FromInvitationAcceptedEvent(@event), cancellationToken);
             }
 
-            var permission = await _unitOfWork.Permission.GetAsync(p =>
-            p.UserId == @event.Data.MemberId && p.SubscriptionId == @event.Data.SubscriptionId);
-
-            if (permission is not null)
-            {
-                await _unitOfWork.Permission.UpdateSequence(
-                    @event.Data.MemberId,@event.Data.SubscriptionId,@event.Sequence
-                    );
-            }
-
+            await _unitOfWork.Permission.UpdateSequence(@event.AggregateId, @event.Sequence);
 
             await _unitOfWork.CommitAsync(cancellationToken);
             return true;

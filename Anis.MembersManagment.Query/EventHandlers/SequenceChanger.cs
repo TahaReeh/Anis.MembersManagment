@@ -6,7 +6,7 @@ namespace Anis.MembersManagment.Query.EventHandlers
     {
    
 
-        public async void ChangeSequence()
+        public  void ChangeSequence()
         {
           
         }

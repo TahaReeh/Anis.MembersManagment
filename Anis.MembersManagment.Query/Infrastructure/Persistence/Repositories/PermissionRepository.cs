@@ -13,17 +13,17 @@ namespace Anis.MembersManagment.Query.Infrastructure.Persistence.Repositories
         public async Task ChangePermissions(Permission entity)
         {
             var permission = await _context.Permissions.FirstOrDefaultAsync(p =>
-            p.UserId == entity.UserId && p.SubscriptionId == entity.SubscriptionId);
+            p.Id == entity.Id);
             if (permission is not null)
             {
                 permission.ChangePermission(entity);
             }
         }
 
-        public async Task UpdateSequence(string userId,string subscriptionId, int sequence)
+        public async Task UpdateSequence(string aggregateId, int sequence)
         {
             var permission = await _context.Permissions.FirstOrDefaultAsync(p =>
-            p.UserId == userId && p.SubscriptionId == subscriptionId);
+            p.Id == aggregateId);
             if (permission is not null)
             {
                 permission.UpdateSequence(sequence);

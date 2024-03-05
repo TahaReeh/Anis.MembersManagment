@@ -77,6 +77,11 @@ namespace Anis.MembersManagment.Query.Entities
             Sequence = entity.Sequence;
             Status = entity.Status;
             SentAt = entity.SentAt;
-        } 
+        }
+
+        public void UpdateSequence(int sequence)
+        {
+            Sequence = sequence;
+        }
     }
 }

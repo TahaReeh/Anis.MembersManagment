@@ -1,6 +1,7 @@
 ﻿using Anis.MembersManagment.Query.Abstractions.IRepositories;
 using Anis.MembersManagment.Query.Entities;
 using Microsoft.EntityFrameworkCore;
+using static Grpc.Core.Metadata;
 
 namespace Anis.MembersManagment.Query.Infrastructure.Persistence.Repositories
 {

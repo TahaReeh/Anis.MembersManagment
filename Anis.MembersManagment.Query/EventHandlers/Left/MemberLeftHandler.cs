@@ -36,14 +36,14 @@ namespace Anis.MembersManagment.Query.EventHandlers.Left
 
             await _unitOfWork.Subscriber.ChangeStatusAsync(Subscriber.FromMemberLeftEvent(@event));
 
-            var permssions = await _unitOfWork.Permission.GetAsync(
-               p => p.UserId == @event.Data.MemberId && p.SubscriptionId == @event.Data.SubscriptionId);
+            var permssions = await _unitOfWork.Permission.GetAsync(p => p.Id == @event.AggregateId);
 
             if (permssions is not null)
                 await _unitOfWork.Permission.RemoveAsync(permssions);
 
-            await _unitOfWork.CommitAsync(cancellationToken);
+            await _unitOfWork.Invitation.UpdateSequence(@event.AggregateId, @event.Sequence);
 
+            await _unitOfWork.CommitAsync(cancellationToken);
             return true;
         }
     }

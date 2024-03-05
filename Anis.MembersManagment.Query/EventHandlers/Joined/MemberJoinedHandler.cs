@@ -40,8 +40,9 @@ namespace Anis.MembersManagment.Query.EventHandlers.Joined
 
             await _unitOfWork.Permission.AddAsync(Permission.FromMemberJoinedEvent(@event), cancellationToken);
 
-            await _unitOfWork.CommitAsync(cancellationToken);
+            await _unitOfWork.Invitation.UpdateSequence(@event.AggregateId, @event.Sequence);
 
+            await _unitOfWork.CommitAsync(cancellationToken);
             return true;
         }
     }

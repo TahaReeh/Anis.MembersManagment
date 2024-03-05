@@ -7,6 +7,7 @@ namespace Anis.MembersManagment.Query.Entities
     public class Permission
     {
         private Permission(
+            string id,
             int sequence,
             string userId,
             string subscriptionId,
@@ -14,6 +15,7 @@ namespace Anis.MembersManagment.Query.Entities
             bool purchaseCards,
             bool manageDevices)
         {
+            Id = id;
             Sequence = sequence;
             UserId = userId;
             SubscriptionId = subscriptionId;
@@ -24,6 +26,7 @@ namespace Anis.MembersManagment.Query.Entities
 
         public static Permission FromInvitationSentEvent(InvitationSent @event)
          => new(
+             id : @event.AggregateId,
              sequence: @event.Sequence,
              userId: @event.Data.MemberId,
              subscriptionId: @event.Data.SubscriptionId,
@@ -34,6 +37,7 @@ namespace Anis.MembersManagment.Query.Entities
 
         public static Permission FromMemberJoinedEvent(MemberJoined @event)
          => new(
+             id: @event.AggregateId,
              sequence: @event.Sequence,
              userId: @event.Data.MemberId,
              subscriptionId: @event.Data.SubscriptionId,
@@ -44,6 +48,7 @@ namespace Anis.MembersManagment.Query.Entities
 
         public static Permission FromPermissionChangedEvent(PermissionChanged @event)
          => new(
+             id: @event.AggregateId,
              sequence: @event.Sequence,
              userId: @event.Data.MemberId,
              subscriptionId: @event.Data.SubscriptionId,
@@ -52,7 +57,7 @@ namespace Anis.MembersManagment.Query.Entities
              manageDevices: @event.Data.Permissions.ManageDevices
              );
 
-        public int Id { get; private set; }
+        public string Id { get; private set; }
         public int Sequence { get; private set; }
         public string UserId { get; private set; }
         public User? User { get; private set; }

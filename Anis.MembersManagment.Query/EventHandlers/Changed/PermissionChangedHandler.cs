@@ -2,6 +2,7 @@
 using Anis.MembersManagment.Query.Entities;
 using Anis.MembersManagment.Query.EventHandlers.Sent;
 using MediatR;
+using System.ComponentModel;
 
 namespace Anis.MembersManagment.Query.EventHandlers.Changed
 {
@@ -18,8 +19,7 @@ namespace Anis.MembersManagment.Query.EventHandlers.Changed
 
         public async Task<bool> Handle(PermissionChanged @event, CancellationToken cancellationToken)
         {
-            var permssions = await _unitOfWork.Permission.GetAsync(
-              p => p.UserId == @event.Data.MemberId && p.SubscriptionId == @event.Data.SubscriptionId);
+            var permssions = await _unitOfWork.Permission.GetAsync(p => p.Id == @event.AggregateId);
 
             if (permssions is null)
             {
@@ -37,8 +37,10 @@ namespace Anis.MembersManagment.Query.EventHandlers.Changed
 
             await _unitOfWork.Permission.ChangePermissions(Permission.FromPermissionChangedEvent(@event));
 
-            await _unitOfWork.CommitAsync(cancellationToken);
+            await _unitOfWork.Subscriber.UpdateSequence(@event.AggregateId, @event.Sequence);
+            await _unitOfWork.Invitation.UpdateSequence(@event.AggregateId, @event.Sequence);
 
+            await _unitOfWork.CommitAsync(cancellationToken);
             return true;
         }
     }
