@@ -6,5 +6,6 @@ namespace Anis.MembersManagment.Query.Abstractions.IRepositories
     {
         Task ChangeStatusAsync(Subscriber entity);
         Task IncrementSequenceAsync(Subscriber entity);
+        Task UpdateSequence(string aggregateId, int sequence);
     }
 }

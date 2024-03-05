@@ -1,4 +1,10 @@
-﻿using Anis.MembersManagment.Query.EventHandlers.Cancelled;
+﻿using Anis.MembersManagment.Query.EventHandlers.Accepted;
+using Anis.MembersManagment.Query.EventHandlers.Cancelled;
+using Anis.MembersManagment.Query.EventHandlers.Changed;
+using Anis.MembersManagment.Query.EventHandlers.Joined;
+using Anis.MembersManagment.Query.EventHandlers.Left;
+using Anis.MembersManagment.Query.EventHandlers.Rejected;
+using Anis.MembersManagment.Query.EventHandlers.Removed;
 using Anis.MembersManagment.Query.EventHandlers.Sent;
 using Azure.Messaging.ServiceBus;
 using MediatR;
@@ -58,12 +64,12 @@ namespace Anis.MembersManagment.Query.Infrastructure.ServiceBus
             {
                 nameof(InvitationSent) => await mediator.Send(Deserialize<InvitationSent>(json)),
                 nameof(InvitationCancelled) => await mediator.Send(Deserialize<InvitationCancelled>(json)),
-                //nameof(InvitationAccepted) => await mediator.Send(Deserialize<InvitationAccepted>(json)),
-                //nameof(InvitationRejected) => await mediator.Send(Deserialize<InvitationRejected>(json)),
-                //nameof(MemberJoined) => await mediator.Send(Deserialize<MemberJoined>(json)),
-                //nameof(MemberRemoved) => await mediator.Send(Deserialize<MemberRemoved>(json)),
-                //nameof(MemberLeft) => await mediator.Send(Deserialize<MemberLeft>(json)),
-                //nameof(PermissionChanged) => await mediator.Send(Deserialize<PermissionChanged>(json)),
+                nameof(InvitationAccepted) => await mediator.Send(Deserialize<InvitationAccepted>(json)),
+                nameof(InvitationRejected) => await mediator.Send(Deserialize<InvitationRejected>(json)),
+                nameof(MemberJoined) => await mediator.Send(Deserialize<MemberJoined>(json)),
+                nameof(MemberRemoved) => await mediator.Send(Deserialize<MemberRemoved>(json)),
+                nameof(MemberLeft) => await mediator.Send(Deserialize<MemberLeft>(json)),
+                nameof(PermissionChanged) => await mediator.Send(Deserialize<PermissionChanged>(json)),
                 //_ => await mediator.Send(Deserialize<UnknownEvent>(json)), //should i add to invitation ??
                 _ => throw new Exception("unknown exception")
             };

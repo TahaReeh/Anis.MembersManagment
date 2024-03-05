@@ -1,4 +1,9 @@
-﻿namespace Anis.MembersManagment.Query.Entities
+﻿using Anis.MembersManagment.Query.EventHandlers.Accepted;
+using Anis.MembersManagment.Query.EventHandlers.Joined;
+using Anis.MembersManagment.Query.EventHandlers.Left;
+using Anis.MembersManagment.Query.EventHandlers.Removed;
+
+namespace Anis.MembersManagment.Query.Entities
 {
     public class Subscriber
     {
@@ -20,45 +25,45 @@
             JoinedAt = joinedAt;
         }
 
-        //public static Subscriber FromInvitationAcceptedEvent(InvitationAccepted @event)
-        //  => new(
-        //      id: @event.AggregateId,
-        //      sequence: @event.Sequence,
-        //      subscriptionId: @event.Data.SubscriptionId,
-        //      userId: @event.Data.MemberId,
-        //      status: "Accepted", // to enum
-        //      joinedAt: @event.DateTime
-        //      );
+        public static Subscriber FromInvitationAcceptedEvent(InvitationAccepted @event)
+          => new(
+              id: @event.AggregateId,
+              sequence: @event.Sequence,
+              subscriptionId: @event.Data.SubscriptionId,
+              userId: @event.Data.MemberId,
+              status: "Accepted", // to enum
+              joinedAt: @event.DateTime
+              );
 
-        //public static Subscriber FromMemberJoinedEvent(MemberJoined @event)
-        //    => new(
-        //        id: @event.AggregateId,
-        //        sequence: @event.Sequence,
-        //        subscriptionId: @event.Data.SubscriptionId,
-        //        userId: @event.Data.MemberId,
-        //        status: "Joined", // to enum
-        //        joinedAt: @event.DateTime
-        //        );
+        public static Subscriber FromMemberJoinedEvent(MemberJoined @event)
+            => new(
+                id: @event.AggregateId,
+                sequence: @event.Sequence,
+                subscriptionId: @event.Data.SubscriptionId,
+                userId: @event.Data.MemberId,
+                status: "Joined", // to enum
+                joinedAt: @event.DateTime
+                );
 
-        //public static Subscriber FromMemberRemovedEvent(MemberRemoved @event)
-        //    => new(
-        //        id: @event.AggregateId,
-        //        sequence: @event.Sequence,
-        //        subscriptionId: @event.Data.SubscriptionId,
-        //        userId: @event.Data.MemberId,
-        //        status: "Removed", // to enum
-        //        joinedAt: @event.DateTime
-        //        );
+        public static Subscriber FromMemberRemovedEvent(MemberRemoved @event)
+            => new(
+                id: @event.AggregateId,
+                sequence: @event.Sequence,
+                subscriptionId: @event.Data.SubscriptionId,
+                userId: @event.Data.MemberId,
+                status: "Removed", // to enum
+                joinedAt: @event.DateTime
+                );
 
-        //public static Subscriber FromMemberLeftEvent(MemberLeft @event)
-        //   => new(
-        //       id: @event.AggregateId,
-        //       sequence: @event.Sequence,
-        //       subscriptionId: @event.Data.SubscriptionId,
-        //       userId: @event.Data.MemberId,
-        //       status: "Left", // to enum
-        //       joinedAt: @event.DateTime
-        //       );
+        public static Subscriber FromMemberLeftEvent(MemberLeft @event)
+           => new(
+               id: @event.AggregateId,
+               sequence: @event.Sequence,
+               subscriptionId: @event.Data.SubscriptionId,
+               userId: @event.Data.MemberId,
+               status: "Left", // to enum
+               joinedAt: @event.DateTime
+               );
 
         public string Id { get; private set; }
         public int Sequence { get; private set; }
@@ -74,6 +79,11 @@
             Sequence = entity.Sequence;
             Status = entity.Status;
             JoinedAt = entity.JoinedAt; // TODO: should only change in joined and accepted events
+        }
+
+        public void UpdateSequence(int sequence)
+        {
+            Sequence = sequence;
         }
 
         public void IncrementSequence() => Sequence++;

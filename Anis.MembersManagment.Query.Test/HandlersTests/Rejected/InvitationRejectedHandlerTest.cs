@@ -1,19 +1,19 @@
 ﻿using Anis.MembersManagment.Query.Abstractions.IRepositories;
-using Anis.MembersManagment.Query.Test.Fakers.Cancelled;
+using Anis.MembersManagment.Query.Test.Fakers.Rejected;
 using Anis.MembersManagment.Query.Test.Fakers.Sent;
 using Anis.MembersManagment.Query.Test.Helpers;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
 
-namespace Anis.MembersManagment.Query.Test.HandlersTests.Cancelled
+namespace Anis.MembersManagment.Query.Test.HandlersTests.Rejected
 {
-    public class InvitationCancelledHandlerTest : IClassFixture<WebApplicationFactory<Program>>
+    public class InvitationRejectedHandlerTest : IClassFixture<WebApplicationFactory<Program>>
     {
         private readonly WebApplicationFactory<Program> _factory;
         private readonly EventHandlerHelper _handlerHelper;
 
-        public InvitationCancelledHandlerTest(WebApplicationFactory<Program> factory, ITestOutputHelper helper)
+        public InvitationRejectedHandlerTest(WebApplicationFactory<Program> factory, ITestOutputHelper helper)
         {
             _factory = factory.WithDefaultConfigurations(helper, services =>
             {
@@ -24,13 +24,15 @@ namespace Anis.MembersManagment.Query.Test.HandlersTests.Cancelled
         }
 
         [Fact]
-        public async Task InvitationCancelled_NewInvitationCancelledEventHandledWhenPendingInvitation_InvitationStatusUpdatedPermissionRemoved()
+        public async Task InvitationRejected_InvitationRejectedEventHandledWhenPendingInvitation_InvitationStatusUpdatedPermissionRemoved()
         {
             var sentEvent = new InvitationSentFaker(sequence: 1).Generate();
+
             await _handlerHelper.HandleAsync(sentEvent);
 
-            var cancelledEvent = new InvitationCancelledFaker(sentEvent).Generate();
-            var isHandled = await _handlerHelper.TryHandleAsync(cancelledEvent);
+            var rejectedEvent = new InvitationRejectedFaker(sentEvent).Generate();
+
+            var isHandled = await _handlerHelper.TryHandleAsync(rejectedEvent);
 
             using var scope = _factory.Services.CreateScope();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
@@ -39,18 +41,18 @@ namespace Anis.MembersManagment.Query.Test.HandlersTests.Cancelled
 
             Assert.True(isHandled);
             Assert.Single(invite);
-            Assert.Equal("Cancelled", invite.First().Status);
+            Assert.Equal("Rejected", invite.First().Status);
             Assert.Empty(permission);
         }
 
         [Fact]
-        public async Task InvitationCancelled_InvitationCancelledEventHandledWithNoPendingInvitation_EventSetToWait()
+        public async Task InvitationRejected_InvitationRejectedEventHandledWithNoPendingInvitation_EventSetToWait()
         {
             var sentEvent = new InvitationSentFaker(sequence: 1).Generate();
 
-            var cancelledEvent = new InvitationCancelledFaker(sentEvent).Generate();
+            var rejectedEvent = new InvitationRejectedFaker(sentEvent).Generate();
 
-            var isHandled = await _handlerHelper.TryHandleAsync(cancelledEvent);
+            var isHandled = await _handlerHelper.TryHandleAsync(rejectedEvent);
 
             using var scope = _factory.Services.CreateScope();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
@@ -61,19 +63,19 @@ namespace Anis.MembersManagment.Query.Test.HandlersTests.Cancelled
         }
 
         [Fact]
-        public async Task InvitationCancelled_DuplicateInvitationCancelledEventHandled_DuplicateEventIgnored()
+        public async Task InvitationRejected_DuplicateInvitationRejectedEventHandled_DuplicateEventIgnored()
         {
             var sentEvent = new InvitationSentFaker(sequence: 1).Generate();
+
             await _handlerHelper.HandleAsync(sentEvent);
 
-            var cancelledEvent = new InvitationCancelledFaker(sentEvent).Generate();
-            await _handlerHelper.HandleAsync(cancelledEvent);
+            var rejectedEvent = new InvitationRejectedFaker(sentEvent).Generate();
 
-            var isHandled = await _handlerHelper.TryHandleAsync(cancelledEvent);
+            await _handlerHelper.HandleAsync(rejectedEvent);
+
+            var isHandled = await _handlerHelper.TryHandleAsync(rejectedEvent);
 
             Assert.True(isHandled);
         }
-
-        
     }
 }

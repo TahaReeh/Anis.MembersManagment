@@ -1,6 +1,7 @@
 ﻿using Anis.MembersManagment.Query.Abstractions.IRepositories;
 using Anis.MembersManagment.Query.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Anis.MembersManagment.Query.EventHandlers.Sent
 {
@@ -36,6 +37,13 @@ namespace Anis.MembersManagment.Query.EventHandlers.Sent
             }
 
             await _unitOfWork.Permission.AddAsync(Permission.FromInvitationSentEvent(@event), cancellationToken);
+
+            var subscriber = await _unitOfWork.Subscriber.GetAsync(s => s.Id == @event.AggregateId);
+            if (subscriber is not null)
+            {
+                await _unitOfWork.Subscriber.UpdateSequence(@event.AggregateId, @event.Sequence);
+            }
+
             await _unitOfWork.CommitAsync(cancellationToken);
             return true;
         }

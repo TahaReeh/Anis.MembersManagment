@@ -19,5 +19,15 @@ namespace Anis.MembersManagment.Query.Infrastructure.Persistence.Repositories
                 permission.ChangePermission(entity);
             }
         }
+
+        public async Task UpdateSequence(string userId,string subscriptionId, int sequence)
+        {
+            var permission = await _context.Permissions.FirstOrDefaultAsync(p =>
+            p.UserId == userId && p.SubscriptionId == subscriptionId);
+            if (permission is not null)
+            {
+                permission.UpdateSequence(sequence);
+            }
+        }
     }
 }

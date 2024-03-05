@@ -1,4 +1,6 @@
-﻿using Anis.MembersManagment.Query.EventHandlers.Sent;
+﻿using Anis.MembersManagment.Query.EventHandlers.Changed;
+using Anis.MembersManagment.Query.EventHandlers.Joined;
+using Anis.MembersManagment.Query.EventHandlers.Sent;
 
 namespace Anis.MembersManagment.Query.Entities
 {
@@ -30,25 +32,25 @@ namespace Anis.MembersManagment.Query.Entities
              manageDevices: @event.Data.Permissions.ManageDevices
              );
 
-        //public static Permission FromMemberJoinedEvent(MemberJoined @event)
-        // => new(
-        //     sequence: @event.Sequence,
-        //     userId: @event.Data.MemberId,
-        //     subscriptionId: @event.Data.SubscriptionId,
-        //     transfare: @event.Data.Permissions.Transfer,
-        //     purchaseCards: @event.Data.Permissions.PurchaseCards,
-        //     manageDevices: @event.Data.Permissions.ManageDevices
-        //     );
+        public static Permission FromMemberJoinedEvent(MemberJoined @event)
+         => new(
+             sequence: @event.Sequence,
+             userId: @event.Data.MemberId,
+             subscriptionId: @event.Data.SubscriptionId,
+             transfer: @event.Data.Permissions.Transfer,
+             purchaseCards: @event.Data.Permissions.PurchaseCards,
+             manageDevices: @event.Data.Permissions.ManageDevices
+             );
 
-        //public static Permission FromPermissionChangedEvent(PermissionChanged @event)
-        // => new(
-        //     sequence: @event.Sequence,
-        //     userId: @event.Data.MemberId,
-        //     subscriptionId: @event.Data.SubscriptionId,
-        //     transfare: @event.Data.Permissions.Transfer,
-        //     purchaseCards: @event.Data.Permissions.PurchaseCards,
-        //     manageDevices: @event.Data.Permissions.ManageDevices
-        //     );
+        public static Permission FromPermissionChangedEvent(PermissionChanged @event)
+         => new(
+             sequence: @event.Sequence,
+             userId: @event.Data.MemberId,
+             subscriptionId: @event.Data.SubscriptionId,
+             transfer: @event.Data.Permissions.Transfer,
+             purchaseCards: @event.Data.Permissions.PurchaseCards,
+             manageDevices: @event.Data.Permissions.ManageDevices
+             );
 
         public int Id { get; private set; }
         public int Sequence { get; private set; }
@@ -66,6 +68,11 @@ namespace Anis.MembersManagment.Query.Entities
             Transfer = entity.Transfer;
             PurchaseCards = entity.PurchaseCards;
             ManageDevices = entity.ManageDevices;
+        }
+
+        public void UpdateSequence(int sequence)
+        {
+            Sequence = sequence;
         }
     }
 }

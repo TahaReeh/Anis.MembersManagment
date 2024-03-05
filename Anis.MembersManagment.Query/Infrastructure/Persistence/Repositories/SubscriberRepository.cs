@@ -13,7 +13,7 @@ namespace Anis.MembersManagment.Query.Infrastructure.Persistence.Repositories
         public async Task ChangeStatusAsync(Subscriber entity)
         {
             var subscriber = await _context.Subscribers.FirstOrDefaultAsync(s => s.Id == entity.Id);
-            if (subscriber != null)
+            if (subscriber is not null)
             {
                 subscriber.ChangeStatus(entity);
             }
@@ -21,11 +21,19 @@ namespace Anis.MembersManagment.Query.Infrastructure.Persistence.Repositories
 
         public async Task IncrementSequenceAsync(Subscriber entity)
         {
-
             var subscriber = await _context.Subscribers.FirstOrDefaultAsync(s => s.Id == entity.Id);
-            if (subscriber != null)
+            if (subscriber is not null)
             {
                 subscriber.IncrementSequence();
+            }
+        }
+
+        public async Task UpdateSequence(string aggregateId, int sequence)
+        {
+            var subscriber = await _context.Subscribers.FirstOrDefaultAsync(s => s.Id == aggregateId);
+            if (subscriber is not null)
+            {
+                subscriber.UpdateSequence(sequence);
             }
         }
     }

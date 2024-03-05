@@ -44,15 +44,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="HandlersTests\Accepted\" />
-		<Folder Include="HandlersTests\Joined\" />
-		<Folder Include="HandlersTests\Left\" />
-		<Folder Include="HandlersTests\PermissionChanged\" />
-		<Folder Include="HandlersTests\Removed\" />
-		<Folder Include="HandlersTests\Rejected\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Protobuf Include="Protos\members.proto" GrpcServices="Client" />
 	</ItemGroup>
 
