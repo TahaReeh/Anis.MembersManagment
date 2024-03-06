@@ -39,7 +39,7 @@ namespace Anis.MembersManagment.Query.Entities
                 sequence: @event.Sequence,
                 subscriptionId: @event.Data.SubscriptionId,
                 userId: @event.Data.MemberId,
-                status: "Cancelled", // to enum
+                status: "Cancelled",
                 sentAt: @event.DateTime
                 );
 
@@ -49,7 +49,7 @@ namespace Anis.MembersManagment.Query.Entities
                 sequence: @event.Sequence,
                 subscriptionId: @event.Data.SubscriptionId,
                 userId: @event.Data.MemberId,
-                status: "Accepted", // to enum
+                status: "Accepted",
                 sentAt: @event.DateTime
                 );
 
@@ -59,7 +59,7 @@ namespace Anis.MembersManagment.Query.Entities
                sequence: @event.Sequence,
                subscriptionId: @event.Data.SubscriptionId,
                userId: @event.Data.MemberId,
-               status: "Rejected", // to enum
+               status: "Rejected",
                sentAt: @event.DateTime
                );
 

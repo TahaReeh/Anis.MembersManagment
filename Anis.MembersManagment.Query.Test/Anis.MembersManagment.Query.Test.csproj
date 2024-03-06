@@ -47,4 +47,8 @@
 	  <Protobuf Include="Protos\members.proto" GrpcServices="Client" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="QueryTests\" />
+	</ItemGroup>
+
 </Project>

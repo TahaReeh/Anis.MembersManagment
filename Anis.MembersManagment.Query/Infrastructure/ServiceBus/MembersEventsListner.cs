@@ -1,6 +1,7 @@
 ﻿using Anis.MembersManagment.Query.EventHandlers.Accepted;
 using Anis.MembersManagment.Query.EventHandlers.Cancelled;
 using Anis.MembersManagment.Query.EventHandlers.Changed;
+using Anis.MembersManagment.Query.EventHandlers.IncrementSequence;
 using Anis.MembersManagment.Query.EventHandlers.Joined;
 using Anis.MembersManagment.Query.EventHandlers.Left;
 using Anis.MembersManagment.Query.EventHandlers.Rejected;
@@ -70,8 +71,7 @@ namespace Anis.MembersManagment.Query.Infrastructure.ServiceBus
                 nameof(MemberRemoved) => await mediator.Send(Deserialize<MemberRemoved>(json)),
                 nameof(MemberLeft) => await mediator.Send(Deserialize<MemberLeft>(json)),
                 nameof(PermissionChanged) => await mediator.Send(Deserialize<PermissionChanged>(json)),
-                //_ => await mediator.Send(Deserialize<UnknownEvent>(json)), //should i add to invitation ??
-                _ => throw new Exception("unknown exception")
+                _ => await mediator.Send(Deserialize<UnknownEvent>(json))
             };
 
             if (isHandled)
