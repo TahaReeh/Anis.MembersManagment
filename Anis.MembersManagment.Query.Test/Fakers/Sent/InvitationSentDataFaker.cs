@@ -1,6 +1,5 @@
-﻿using Anis.MembersManagment.Query.Entities;
-using Anis.MembersManagment.Query.EventHandlers.Sent;
-using Bogus;
+﻿using Anis.MembersManagment.Query.EventHandlers.Sent;
+using Anis.MembersManagment.Query.Test.Fakers.EntitiesFakers;
 
 namespace Anis.MembersManagment.Query.Test.Fakers.Sent
 {
@@ -18,7 +17,7 @@ namespace Anis.MembersManagment.Query.Test.Fakers.Sent
             RuleFor(e=>e.SubscriptionId,faker=>faker.Random.Guid().ToString());
             RuleFor(e=>e.MemberId,faker=>faker.Random.Guid().ToString());
             RuleFor(e => e.Permissions, () => new PermissionFaker()
-            .GenerateWithKnownAggregate($"{SubscriptionId}_{MemberId}"));
+            .WithKnownAggregate($"{SubscriptionId}_{MemberId}"));
         }
     }
 }

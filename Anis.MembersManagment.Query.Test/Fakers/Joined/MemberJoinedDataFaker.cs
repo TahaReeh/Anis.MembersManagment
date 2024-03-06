@@ -1,4 +1,5 @@
 ﻿using Anis.MembersManagment.Query.EventHandlers.Joined;
+using Anis.MembersManagment.Query.Test.Fakers.EntitiesFakers;
 
 namespace Anis.MembersManagment.Query.Test.Fakers.Joined
 {
@@ -16,7 +17,7 @@ namespace Anis.MembersManagment.Query.Test.Fakers.Joined
             RuleFor(e => e.SubscriptionId, SubscriptionId);
             RuleFor(e => e.MemberId, MemberId);
             RuleFor(e => e.Permissions, () => new PermissionFaker()
-            .GenerateWithKnownAggregate($"{SubscriptionId}_{MemberId}"));
+            .WithKnownAggregate($"{SubscriptionId}_{MemberId}"));
         }
     }
 }

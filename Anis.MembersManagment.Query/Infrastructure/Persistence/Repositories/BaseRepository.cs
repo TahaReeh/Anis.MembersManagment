@@ -20,7 +20,9 @@ namespace Anis.MembersManagment.Query.Infrastructure.Persistence.Repositories
         public async Task<IEnumerable<T>> GetAllAsync(
             Expression<Func<T, bool>>? filter = null,
             string? includeProperties = null,
-            int? page = null,int? size = null)
+            int? page = null,
+            int? size = null
+            )
         {
             IQueryable<T> query = dbSet;
             if (filter != null)
@@ -80,6 +82,11 @@ namespace Anis.MembersManagment.Query.Infrastructure.Persistence.Repositories
         {
             await dbSet.AddAsync(entity, cancellationToken);
             return entity;
+        }
+
+        public async Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken)
+        {
+            await dbSet.AddRangeAsync(entities, cancellationToken);
         }
 
         public Task RemoveAsync(T entity)

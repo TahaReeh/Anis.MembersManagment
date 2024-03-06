@@ -1,10 +1,6 @@
 ﻿using Anis.MembersManagment.Query.EventHandlers.Changed;
 using Anis.MembersManagment.Query.EventHandlers.Joined;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Anis.MembersManagment.Query.Test.Fakers.EntitiesFakers;
 
 namespace Anis.MembersManagment.Query.Test.Fakers.Changed
 {
@@ -17,7 +13,7 @@ namespace Anis.MembersManagment.Query.Test.Fakers.Changed
             RuleFor(e => e.SubscriptionId, memberJoined.Data.SubscriptionId);
             RuleFor(e => e.MemberId, memberJoined.Data.MemberId);
             RuleFor(e => e.Permissions, () => new PermissionFaker()
-            .GenerateWithKnownAggregate(memberJoined.AggregateId));
+            .WithKnownAggregate(memberJoined.AggregateId));
         }
     }
 }
