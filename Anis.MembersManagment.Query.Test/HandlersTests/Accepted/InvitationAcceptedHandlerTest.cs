@@ -25,7 +25,7 @@ namespace Anis.MembersManagment.Query.Test.HandlersTests.Accepted
         }
 
         [Fact]
-        public async Task InvitationAccepted_NewInvitationAcceptedEventHandledWhenPendingInvitation_InvitationStatusUpdatedNewSubscriberSaved()
+        public async Task InvitationAccepted_EventHandledWhenPendingInvitation_InvitationStatusUpdatedSubscriberSavedPermissionSequenceUpdated()
         {
             var sentEvent = new InvitationSentFaker(sequence: 1).Generate();
 
@@ -39,13 +39,16 @@ namespace Anis.MembersManagment.Query.Test.HandlersTests.Accepted
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             var invite = await unitOfWork.Invitation.GetAllAsync();
             var subscriber = await unitOfWork.Subscriber.GetAllAsync();
+            var permission = await unitOfWork.Permission.GetAllAsync();
 
             Assert.True(isHandled);
             Assert.Single(invite);
             Assert.Single(subscriber);
+            Assert.Single(permission);
             Assert.Equal(invite.First().SubscriptionId, subscriber.First().SubscriptionId);
             Assert.Equal(invite.First().UserId, subscriber.First().UserId);
             Assert.Equal("Accepted", invite.First().Status);
+            Assert.Equal(invite.First().Sequence, permission.First().Sequence);
         }
 
         [Fact]
@@ -81,6 +84,20 @@ namespace Anis.MembersManagment.Query.Test.HandlersTests.Accepted
             var isHandled = await _handlerHelper.TryHandleAsync(acceptedEvent);
 
             Assert.True(isHandled);
+        }
+
+        [Fact]
+        public async Task InvitationAccepted_EventSequenceNotExpectedYet_EventSetToWait()
+        {
+            var sentEvent = new InvitationSentFaker(sequence: 1).Generate();
+            await _handlerHelper.HandleAsync(sentEvent);
+
+            var acceptedEvent = new InvitationAcceptedFaker(sentEvent)
+                .RuleFor(e=>e.Sequence,3).Generate();
+
+            var isHandled = await _handlerHelper.TryHandleAsync(acceptedEvent);
+
+            Assert.False(isHandled);
         }
     }
 }

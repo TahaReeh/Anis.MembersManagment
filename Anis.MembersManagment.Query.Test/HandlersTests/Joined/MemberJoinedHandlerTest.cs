@@ -1,5 +1,7 @@
 ﻿using Anis.MembersManagment.Query.Abstractions.IRepositories;
+using Anis.MembersManagment.Query.Test.Fakers;
 using Anis.MembersManagment.Query.Test.Fakers.Joined;
+using Anis.MembersManagment.Query.Test.Fakers.Removed;
 using Anis.MembersManagment.Query.Test.Helpers;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,7 +31,7 @@ namespace Anis.MembersManagment.Query.Test.HandlersTests.Joined
         }
 
         [Fact]
-        public async Task MemberJoined_NewMemberJoinedEventHandled_NewPermissionAndNewSubscriberWithJoinedStatusSaved()
+        public async Task MemberJoined_EventHandled_PermissionAndSubscriberSaved()
         {
             var @event = new MemberJoinedFaker(sequence: 1).Generate();
 
@@ -66,9 +68,49 @@ namespace Anis.MembersManagment.Query.Test.HandlersTests.Joined
         }
 
         [Fact]
-        public async Task MemberJoined_MemberJoinedEventHandledAfterLeftOrRemoved_SubscriberStatusUpdatedNewPermissionSaved()
+        public async Task MemberJoined_MemberJoinedEventHandledAfterLeftOrRemoved_SubscriberStatusUpdatedPermissionSaved()
         {
-         
+            var firstJoinedEvent = new MemberJoinedFaker(sequence: 1).Generate();
+            var removedEvent = new MemberRemovedFaker(firstJoinedEvent).Generate();
+
+            await Task.WhenAll( 
+                _handlerHelper.HandleAsync(firstJoinedEvent),
+                _handlerHelper.HandleAsync(removedEvent)
+                );
+
+            var secondJoinedEvent = new MemberJoinedFaker(sequence: 3)
+                .RuleFor(i => i.AggregateId, firstJoinedEvent.AggregateId)
+                .Generate();
+
+            var isHandled = await _handlerHelper.TryHandleAsync(secondJoinedEvent);
+
+            using var scope = _factory.Services.CreateScope();
+            var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+            var subscriber = await unitOfWork.Subscriber.GetAllAsync();
+            var permission = await unitOfWork.Permission.GetAllAsync();
+
+            Assert.True(isHandled);
+            Assert.Single(subscriber);
+            Assert.Single(permission);
+            Assert.Equal(secondJoinedEvent.AggregateId, permission.First().Id);
+            Assert.Equal("Joined", subscriber.First().Status);
+        }
+
+        [Fact]
+        public async Task MemberJoined_EventSequenceNotExpectedYet_EventSetToWait()
+        {
+            var firstJoinedEvent = new MemberJoinedFaker(sequence: 1).Generate();
+            await _handlerHelper.HandleAsync(firstJoinedEvent);
+
+            var removedEvent = new MemberRemovedFaker(firstJoinedEvent).Generate();
+
+            var secondJoinedEvent = new MemberJoinedFaker(sequence: 3)
+                .RuleFor(i => i.AggregateId, firstJoinedEvent.AggregateId)
+                .Generate();
+
+            var isHandled = await _handlerHelper.TryHandleAsync(secondJoinedEvent);
+
+            Assert.False(isHandled);
         }
     }
 }

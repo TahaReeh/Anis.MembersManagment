@@ -26,10 +26,8 @@ namespace Anis.MembersManagment.Query.Test.HandlersTests.Sent
         }
 
         [Fact]
-        public async Task InvitationSent_UserFirstInvitationSentEventHandled_NewPermissionAndNewInvitationWithPendingStatusSaved()
+        public async Task InvitationSent_UserFirstInvitationSentEventHandled_PermissionAndInvitationSaved()
         {
-            // TODO: permission should be generated from event???
-
             var @event = new InvitationSentFaker(sequence: 1).Generate();
 
             var isHandled = await _handlerHelper.TryHandleAsync(@event);
@@ -65,7 +63,7 @@ namespace Anis.MembersManagment.Query.Test.HandlersTests.Sent
         }
 
         [Fact]
-        public async Task InvitationSent_InvitationSentEventSequenceNotExpectedYet_EventSetToWait() // TODO: add this to all
+        public async Task InvitationSent_InvitationSentEventSequenceNotExpectedYet_EventSetToWait()
         {
             var firstEvent = new InvitationSentFaker(sequence: 1).Generate();
 
@@ -89,7 +87,7 @@ namespace Anis.MembersManagment.Query.Test.HandlersTests.Sent
         }
 
         [Fact]
-        public async Task InvitationSent_InvitationSentEventHandledAfterCanceledOrRejectedOrLeftOrRemoved_InvitationStatusUpdatedNewPermissionSaved()
+        public async Task InvitationSent_InvitationSentEventHandledAfterCanceledOrRejectedOrLeftOrRemoved_InvitationStatusUpdatedPermissionSaved()
         {
             var firstSentEvent = new InvitationSentFaker(sequence: 1).Generate();
             var cancelEvent = new InvitationCancelledFaker(firstSentEvent).Generate();
@@ -111,7 +109,10 @@ namespace Anis.MembersManagment.Query.Test.HandlersTests.Sent
             //Assert.Empty(permissionBefore);
             //Assert.Equal("Cancelled", inviteBefore.First().Status);
 
-            var secondSentEvent = new InvitationSentFaker(sequence: 3).RuleFor(i=>i.AggregateId, firstSentEvent.AggregateId).Generate();
+            var secondSentEvent = new InvitationSentFaker(sequence: 3)
+                .RuleFor(i=>i.AggregateId, firstSentEvent.AggregateId)
+                .Generate();
+
             var isSecondHandled = await _handlerHelper.TryHandleAsync(secondSentEvent);
 
             var inviteAfter = await unitOfWork.Invitation.GetAllAsync();

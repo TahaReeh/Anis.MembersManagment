@@ -24,7 +24,7 @@ namespace Anis.MembersManagment.Query.Test.HandlersTests.Rejected
         }
 
         [Fact]
-        public async Task InvitationRejected_InvitationRejectedEventHandledWhenPendingInvitation_InvitationStatusUpdatedPermissionRemoved()
+        public async Task InvitationRejected_EventHandledWhenPendingInvitation_InvitationStatusUpdatedPermissionRemoved()
         {
             var sentEvent = new InvitationSentFaker(sequence: 1).Generate();
 
@@ -76,6 +76,19 @@ namespace Anis.MembersManagment.Query.Test.HandlersTests.Rejected
             var isHandled = await _handlerHelper.TryHandleAsync(rejectedEvent);
 
             Assert.True(isHandled);
+        }
+
+        [Fact]
+        public async Task InvitationRejected_EventSequenceNotExpectedYet_EventSetToWait()
+        {
+            var sentEvent = new InvitationSentFaker(sequence: 1).Generate();
+
+            var rejectedEvent = new InvitationRejectedFaker(sentEvent)
+                .RuleFor(e=>e.Sequence,3).Generate();
+
+            var isHandled = await _handlerHelper.TryHandleAsync(rejectedEvent);
+
+            Assert.False(isHandled);
         }
     }
 }

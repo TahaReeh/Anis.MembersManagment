@@ -35,12 +35,7 @@ namespace Anis.MembersManagment.Query.EventHandlers.Cancelled
             }
 
             await _unitOfWork.Invitation.ChangeStatusAsync(Invitation.FromInvitationCancelledEvent(@event));
-
-            var subscriber = await _unitOfWork.Subscriber.GetAsync(s => s.Id == @event.AggregateId);
-            if (subscriber is not null)
-            {
-                await _unitOfWork.Subscriber.UpdateSequence(@event.AggregateId, @event.Sequence);
-            }
+            await _unitOfWork.Subscriber.UpdateSequence(@event.AggregateId, @event.Sequence);
 
             var permssions = await _unitOfWork.Permission.GetAsync(p => p.Id == @event.AggregateId);
             if (permssions is not null)

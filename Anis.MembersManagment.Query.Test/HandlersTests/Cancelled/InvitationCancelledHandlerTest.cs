@@ -24,7 +24,7 @@ namespace Anis.MembersManagment.Query.Test.HandlersTests.Cancelled
         }
 
         [Fact]
-        public async Task InvitationCancelled_NewInvitationCancelledEventHandledWhenPendingInvitation_InvitationStatusUpdatedPermissionRemoved()
+        public async Task InvitationCancelled_EventHandledWhenPendingInvitation_InvitationStatusUpdatedPermissionRemoved()
         {
             var sentEvent = new InvitationSentFaker(sequence: 1).Generate();
             await _handlerHelper.HandleAsync(sentEvent);
@@ -74,6 +74,19 @@ namespace Anis.MembersManagment.Query.Test.HandlersTests.Cancelled
             Assert.True(isHandled);
         }
 
-        
+        [Fact]
+        public async Task InvitationCancelled_EventSequenceNotExpectedYet_EventSetToWait()
+        {
+            var sentEvent = new InvitationSentFaker(sequence: 1).Generate();
+            await _handlerHelper.HandleAsync(sentEvent);
+
+            var cancelledEvent = new InvitationCancelledFaker(sentEvent)
+                .RuleFor(e => e.Sequence, 3)
+                .Generate();
+
+            var isHandled = await _handlerHelper.TryHandleAsync(cancelledEvent);
+
+            Assert.False(isHandled);
+        }
     }
 }

@@ -25,7 +25,7 @@ namespace Anis.MembersManagment.Query.EventHandlers.Joined
             {
                 if (@event.Sequence <= subscriber.Sequence) return true;
 
-                if (@event.Sequence >= subscriber.Sequence + 1)
+                if (@event.Sequence > subscriber.Sequence + 1)
                 {
                     _logger.LogWarning("{Sequence} is not the expected sequence for subscriber {AggregateId}", @event.Sequence, @event.AggregateId);
                     return false;
