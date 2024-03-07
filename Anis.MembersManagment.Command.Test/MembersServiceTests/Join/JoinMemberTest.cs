@@ -1,7 +1,4 @@
-﻿using Microsoft.Azure.Amqp.Framing;
-using System;
-
-namespace Anis.MembersManagment.Command.Test.MembersServiceTests.Join
+﻿namespace Anis.MembersManagment.Command.Test.MembersServiceTests.Join
 {
     public class JoinMemberTest(WebApplicationFactory<Program> factory, ITestOutputHelper helper) : IClassFixture<WebApplicationFactory<Program>>
     {

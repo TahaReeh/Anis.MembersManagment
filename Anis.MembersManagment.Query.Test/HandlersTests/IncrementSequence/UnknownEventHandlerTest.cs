@@ -1,12 +1,7 @@
-﻿using Anis.MembersManagment.Query.Abstractions.IRepositories;
-using Anis.MembersManagment.Query.Test.Fakers.Accepted;
+﻿using Anis.MembersManagment.Query.Test.Fakers.Accepted;
 using Anis.MembersManagment.Query.Test.Fakers.IncrementSequence;
 using Anis.MembersManagment.Query.Test.Fakers.Joined;
 using Anis.MembersManagment.Query.Test.Fakers.Sent;
-using Anis.MembersManagment.Query.Test.Helpers;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using Xunit.Abstractions;
 
 namespace Anis.MembersManagment.Query.Test.HandlersTests.IncrementSequence
 {

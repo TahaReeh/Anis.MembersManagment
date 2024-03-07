@@ -1,14 +1,4 @@
-﻿using Anis.MembersManagment.Query.Abstractions.IRepositories;
-using Anis.MembersManagment.Query.Entities;
-using Anis.MembersManagment.Query.Test.Fakers.EntitiesFakers;
-using Anis.MembersManagment.Query.Test.Helpers;
-using Anis.MembersManagment.Query.Test.MembersProto;
-using Grpc.Core;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using Xunit.Abstractions;
-
-namespace Anis.MembersManagment.Query.Test.QueryTests
+﻿namespace Anis.MembersManagment.Query.Test.QueryTests
 {
     public class MemberSubscriptionsTest : IClassFixture<WebApplicationFactory<Program>>
     {

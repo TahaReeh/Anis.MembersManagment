@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Anis.MembersManagment.Query.Test.Helpers
 {

@@ -47,10 +47,4 @@
     <Protobuf Include="Protos\members.proto" GrpcServices="Client" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Fakers\Cancelled\" />
-    <Folder Include="Fakers\Joined\" />
-    <Folder Include="Fakers\Rejected\" />
-  </ItemGroup>
-
 </Project>

@@ -1,11 +1,4 @@
-﻿using Microsoft.Identity.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Anis.MembersManagment.Command.Test.MembersServiceTests.Remove
+﻿namespace Anis.MembersManagment.Command.Test.MembersServiceTests.Remove
 {
     public class RemoveMemberTest(WebApplicationFactory<Program> factory, ITestOutputHelper helper) : IClassFixture<WebApplicationFactory<Program>>
     {

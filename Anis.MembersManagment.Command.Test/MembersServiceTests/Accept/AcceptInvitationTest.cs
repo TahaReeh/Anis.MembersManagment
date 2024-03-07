@@ -1,6 +1,4 @@
-﻿using Anis.MembersManagment.Command.Test.MembersProto;
-
-namespace Anis.MembersManagment.Command.Test.MembersServiceTests.Accept
+﻿namespace Anis.MembersManagment.Command.Test.MembersServiceTests.Accept
 {
     public class AcceptInvitationTest(WebApplicationFactory<Program> factory, ITestOutputHelper helper) : IClassFixture<WebApplicationFactory<Program>>
     {

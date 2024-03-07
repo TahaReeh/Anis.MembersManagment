@@ -1,10 +1,5 @@
 ﻿using Anis.MembersManagment.Query.EventHandlers.Cancelled;
 using Anis.MembersManagment.Query.EventHandlers.Sent;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Anis.MembersManagment.Query.Test.Fakers.Cancelled
 {

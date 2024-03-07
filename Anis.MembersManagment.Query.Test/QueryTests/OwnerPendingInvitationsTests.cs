@@ -1,20 +1,4 @@
-﻿using Anis.MembersManagment.Query.Abstractions.IRepositories;
-using Anis.MembersManagment.Query.Entities;
-using Anis.MembersManagment.Query.Infrastructure.Persistence.Repositories;
-using Anis.MembersManagment.Query.Test.Fakers.EntitiesFakers;
-using Anis.MembersManagment.Query.Test.Helpers;
-using Anis.MembersManagment.Query.Test.MembersProto;
-using Grpc.Core;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit.Abstractions;
-
-namespace Anis.MembersManagment.Query.Test.QueryTests
+﻿namespace Anis.MembersManagment.Query.Test.QueryTests
 {
     public class OwnerPendingInvitationsTests : IClassFixture<WebApplicationFactory<Program>>
     {

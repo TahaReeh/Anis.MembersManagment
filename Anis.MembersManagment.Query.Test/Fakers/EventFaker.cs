@@ -1,9 +1,4 @@
 ﻿using Anis.MembersManagment.Query.EventHandlers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Anis.MembersManagment.Query.Test.Fakers
 {

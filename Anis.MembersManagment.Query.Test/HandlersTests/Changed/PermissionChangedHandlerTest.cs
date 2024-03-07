@@ -1,10 +1,5 @@
-﻿using Anis.MembersManagment.Query.Abstractions.IRepositories;
-using Anis.MembersManagment.Query.Test.Fakers.Changed;
+﻿using Anis.MembersManagment.Query.Test.Fakers.Changed;
 using Anis.MembersManagment.Query.Test.Fakers.Joined;
-using Anis.MembersManagment.Query.Test.Helpers;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using Xunit.Abstractions;
 
 namespace Anis.MembersManagment.Query.Test.HandlersTests.PermissionChanged
 {

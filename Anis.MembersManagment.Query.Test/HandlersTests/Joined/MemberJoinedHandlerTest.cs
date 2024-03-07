@@ -1,17 +1,5 @@
-﻿using Anis.MembersManagment.Query.Abstractions.IRepositories;
-using Anis.MembersManagment.Query.Test.Fakers;
-using Anis.MembersManagment.Query.Test.Fakers.Joined;
+﻿using Anis.MembersManagment.Query.Test.Fakers.Joined;
 using Anis.MembersManagment.Query.Test.Fakers.Removed;
-using Anis.MembersManagment.Query.Test.Helpers;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit.Abstractions;
 
 namespace Anis.MembersManagment.Query.Test.HandlersTests.Joined
 {

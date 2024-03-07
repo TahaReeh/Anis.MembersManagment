@@ -1,11 +1,5 @@
-﻿using Anis.MembersManagment.Query.Abstractions.IRepositories;
-using Anis.MembersManagment.Query.Test.Fakers.Accepted;
+﻿using Anis.MembersManagment.Query.Test.Fakers.Accepted;
 using Anis.MembersManagment.Query.Test.Fakers.Sent;
-using Anis.MembersManagment.Query.Test.Helpers;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel;
-using Xunit.Abstractions;
 
 namespace Anis.MembersManagment.Query.Test.HandlersTests.Accepted
 {
