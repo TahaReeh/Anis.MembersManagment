@@ -31,7 +31,7 @@ namespace Anis.MembersManagment.Query.Entities
               sequence: @event.Sequence,
               subscriptionId: @event.Data.SubscriptionId,
               userId: @event.Data.MemberId,
-              status: "Accepted", // to enum
+              status: "Accepted",
               joinedAt: @event.DateTime
               );
 
@@ -41,7 +41,7 @@ namespace Anis.MembersManagment.Query.Entities
                 sequence: @event.Sequence,
                 subscriptionId: @event.Data.SubscriptionId,
                 userId: @event.Data.MemberId,
-                status: "Joined", // to enum
+                status: "Joined", 
                 joinedAt: @event.DateTime
                 );
 
@@ -51,7 +51,7 @@ namespace Anis.MembersManagment.Query.Entities
                 sequence: @event.Sequence,
                 subscriptionId: @event.Data.SubscriptionId,
                 userId: @event.Data.MemberId,
-                status: "Removed", // to enum
+                status: "Removed", 
                 joinedAt: @event.DateTime
                 );
 
@@ -61,7 +61,7 @@ namespace Anis.MembersManagment.Query.Entities
                sequence: @event.Sequence,
                subscriptionId: @event.Data.SubscriptionId,
                userId: @event.Data.MemberId,
-               status: "Left", // to enum
+               status: "Left", 
                joinedAt: @event.DateTime
                );
 

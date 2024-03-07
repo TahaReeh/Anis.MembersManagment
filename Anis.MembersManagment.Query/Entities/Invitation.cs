@@ -29,7 +29,7 @@ namespace Anis.MembersManagment.Query.Entities
                 sequence: @event.Sequence,
                 subscriptionId: @event.Data.SubscriptionId,
                 userId: @event.Data.MemberId,
-                status: "Pending", // TODO: to enum
+                status: "Pending", // TODO: replace magic words
                 sentAt: @event.DateTime
                 );
 
