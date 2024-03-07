@@ -21,13 +21,21 @@ namespace Anis.MembersManagment.Query.Infrastructure.ServiceBus
         private readonly ILogger<MembersEventsListner> _logger;
         private readonly IServiceProvider _serviceProvider;
 
-        public MembersEventsListner(MembersServiceBus serviceBus, IConfiguration configuration, ILogger<MembersEventsListner> logger,IServiceProvider serviceProvider)
+        public MembersEventsListner(
+            MembersServiceBus serviceBus,
+            IConfiguration configuration,
+            ILogger<MembersEventsListner> logger,
+            IServiceProvider serviceProvider
+            )
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
+
+            var options = configuration.GetSection(ServiceBusOptions.ServiceBus).Get<ServiceBusOptions>();
+
             _processor = serviceBus.Client.CreateSessionProcessor(
-                topicName: configuration["taha-member-managment"],
-                subscriptionName: configuration["invitations-subscription"],
+                topicName: options!.TopicName,
+                subscriptionName: options.SubscriptionName,
                 options: new ServiceBusSessionProcessorOptions()
                 {
                     AutoCompleteMessages = false,
@@ -36,12 +44,9 @@ namespace Anis.MembersManagment.Query.Infrastructure.ServiceBus
                     MaxConcurrentCallsPerSession = 1,
                 });
 
-            _processor.ProcessMessageAsync += Processor_ProcessMessageAsync;
-            _processor.ProcessErrorAsync += Processor_ProcessErrorAsync;
-
             _deadLetterProcessor = serviceBus.Client.CreateProcessor(
-                topicName: configuration["taha-member-managment"],
-                subscriptionName: configuration["invitations-subscription"],
+                topicName: options.TopicName,
+                subscriptionName: options.SubscriptionName,
                 options: new ServiceBusProcessorOptions()
                 {
                     AutoCompleteMessages = false,
@@ -50,18 +55,44 @@ namespace Anis.MembersManagment.Query.Infrastructure.ServiceBus
                     SubQueue = SubQueue.DeadLetter,
                 });
 
+            _processor.ProcessMessageAsync += Processor_ProcessMessageAsync;
+            _processor.ProcessErrorAsync += Processor_ProcessErrorAsync;
+
             _deadLetterProcessor.ProcessMessageAsync += DeadLetterProcessor_ProcessMessageAsync;
             _deadLetterProcessor.ProcessErrorAsync += DeadLetterProcessor_ProcessErrorAsync;
         }
 
-        private async Task Processor_ProcessMessageAsync(ProcessSessionMessageEventArgs arg) // TODO: convert to generic method to handle deadLetters
+        private async Task Processor_ProcessMessageAsync(ProcessSessionMessageEventArgs arg)
         {
-            var json = Encoding.UTF8.GetString(arg.Message.Body);
+            var isHandled = await TryHandleAsync(arg.Message);
+
+            if (isHandled)
+            {
+                await arg.CompleteMessageAsync(arg.Message);
+            }
+            else
+            {
+                _logger.LogWarning("Message {MessageId} not handled", arg.Message.MessageId);
+                await Task.Delay(5000);
+                await arg.AbandonMessageAsync(arg.Message);
+            }
+        }
+
+
+        private async Task<bool> TryHandleAsync(ServiceBusReceivedMessage message)
+        {
+            _logger.LogInformation(
+                "Event {Event} Arrived, SessionId {SessionId}.",
+                message.Subject,
+                message.SessionId
+            );
 
             using var scope = _serviceProvider.CreateScope();
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-            var isHandled = arg.Message.Subject switch
+            var json = Encoding.UTF8.GetString(message.Body);
+
+            return message.Subject switch
             {
                 nameof(InvitationSent) => await mediator.Send(Deserialize<InvitationSent>(json)),
                 nameof(InvitationCancelled) => await mediator.Send(Deserialize<InvitationCancelled>(json)),
@@ -73,22 +104,11 @@ namespace Anis.MembersManagment.Query.Infrastructure.ServiceBus
                 nameof(PermissionChanged) => await mediator.Send(Deserialize<PermissionChanged>(json)),
                 _ => await mediator.Send(Deserialize<UnknownEvent>(json))
             };
-
-            if (isHandled)
-            {
-                await arg.CompleteMessageAsync(arg.Message);
-            }
-            else
-            {
-                _logger.LogWarning("Message {MessageId} not handled",arg.Message.MessageId);
-                await Task.Delay(5000);
-                await arg.AbandonMessageAsync(arg.Message);
-            }
         }
 
         private static T Deserialize<T>(string json)
-            => JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
-            ?? throw new InvalidOperationException("Faile to deserialize message");
+        => JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+        ?? throw new InvalidOperationException("Faile to deserialize message");
 
         private Task Processor_ProcessErrorAsync(ProcessErrorEventArgs arg)
         {
@@ -117,16 +137,7 @@ namespace Anis.MembersManagment.Query.Infrastructure.ServiceBus
 
         private async Task DeadLetterProcessor_ProcessMessageAsync(ProcessMessageEventArgs arg)
         {
-            var json = Encoding.UTF8.GetString(arg.Message.Body);
-
-            using var scope = _serviceProvider.CreateScope();
-            var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-
-            var isHandled = arg.Message.Subject switch
-            {
-                nameof(InvitationSent) => await mediator.Send(Deserialize<InvitationSent>(json)),
-                _ => throw new InvalidOperationException("unknown message type"),
-            };
+            var isHandled = await TryHandleAsync(arg.Message);
 
             if (isHandled)
             {
@@ -141,9 +152,21 @@ namespace Anis.MembersManagment.Query.Infrastructure.ServiceBus
         }
         #endregion
 
-        public Task StartAsync(CancellationToken cancellationToken) => _processor.StartProcessingAsync(cancellationToken);
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
+            return Task.WhenAll(
+                _processor.StartProcessingAsync(cancellationToken),
+                 _deadLetterProcessor.StartProcessingAsync(cancellationToken)
+                );
+        }
 
-        public Task StopAsync(CancellationToken cancellationToken) => _processor.CloseAsync(cancellationToken);
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            return Task.WhenAll(
+                _processor.CloseAsync(cancellationToken),
+                _deadLetterProcessor.CloseAsync(cancellationToken)
+                );
+        }
 
     }
 }
