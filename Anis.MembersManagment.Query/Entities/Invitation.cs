@@ -66,9 +66,9 @@ namespace Anis.MembersManagment.Query.Entities
         public string Id { get; private set; }
         public int Sequence {  get; private set; }
         public string SubscriptionId { get; private set; }
-        public Subscription? Subscription { get; private set; }
+        public Subscription Subscription { get; private set; } = default!;
         public string UserId { get; private set; }
-        public User? User { get; private set; }
+        public User User { get; private set; } = default!;
         public string Status { get; private set; }
         public DateTime SentAt { get; private set; }
 

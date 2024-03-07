@@ -1,4 +1,5 @@
 ﻿using Anis.MembersManagment.Query.Abstractions.IRepositories;
+using Anis.MembersManagment.Query.Entities;
 using Anis.MembersManagment.Query.Test.Fakers.EntitiesFakers;
 using Anis.MembersManagment.Query.Test.Helpers;
 using Anis.MembersManagment.Query.Test.MembersProto;
@@ -9,11 +10,11 @@ using Xunit.Abstractions;
 
 namespace Anis.MembersManagment.Query.Test.QueryTests
 {
-    public class MemberPendingInvitationsTest : IClassFixture<WebApplicationFactory<Program>>
+    public class SubscriptionMembersTests : IClassFixture<WebApplicationFactory<Program>>
     {
         private readonly WebApplicationFactory<Program> _factory;
 
-        public MemberPendingInvitationsTest(WebApplicationFactory<Program> factory, ITestOutputHelper helper)
+        public SubscriptionMembersTests(WebApplicationFactory<Program> factory, ITestOutputHelper helper)
         {
             _factory = factory.WithDefaultConfigurations(helper, services =>
             {
@@ -22,48 +23,48 @@ namespace Anis.MembersManagment.Query.Test.QueryTests
         }
 
         [Fact]
-        public async Task MemberPendingInvitations_QueryExistingEntities_ReturnsSelectedMemberInvitations()
+        public async Task SubscriptionMembers_QueryExistingEntities_ReturnsSelectedSubscriptionMembers()
         {
-            string userId = Guid.NewGuid().ToString();
+            string subscriptionId = Guid.NewGuid().ToString();
 
             using var scope = _factory.Services.CreateScope();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-            await unitOfWork.Invitation.AddRangeAsync(
-                new InvitationFaker().SameUserDiffrentSubscription(userId, count: 3)
-                ,new CancellationToken());
+            await unitOfWork.Subscriber.AddRangeAsync(
+                new SubscriberFaker().SameSupscriptionDiffrentUser(subscriptionId, count: 3)
+                , new CancellationToken());
 
             await unitOfWork.CommitAsync(new CancellationToken());
 
             var client = new Members.MembersClient(_factory.CreateGrpcChannel());
 
-            var request = new GetMemberPendingInvitationsRequest()
+            var request = new GetSubscriptionMembersRequest()
             {
-                MemberId = userId,
+                SubscriptionId = subscriptionId,
                 Page = 1,
                 Size = 20
             };
 
-            var response = await client.GetMemberPendingInvitationsAsync(request);
+            var response = await client.GetSubscriptionMembersAsync(request);
 
             Assert.Equal(1, response.Page);
             Assert.Equal(20, response.PageSize);
             Assert.Equal(3, response.TotalResults);
-            Assert.Equal(3, response.Invitations.Count);
+            Assert.Equal(3, response.Subscribers.Count);
         }
 
-
         [Fact]
-        public async Task MemberPendingInvitations_QueryUserWithNoInvitation_ThrowNotFoundRpcException()
+        public async Task SubscriptionMembers_QuerySubscriptionWithNoMembers_ThrowNotFoundRpcException()
         {
             var client = new Members.MembersClient(_factory.CreateGrpcChannel());
 
-            var request = new GetMemberPendingInvitationsRequest()
+            var request = new GetSubscriptionMembersRequest()
             {
-                MemberId = Guid.NewGuid().ToString(),
+                SubscriptionId = Guid.NewGuid().ToString(),
             };
 
-            var exception = await Assert.ThrowsAsync<RpcException>(() => client.GetMemberPendingInvitationsAsync(request).ResponseAsync);
+            var exception = await Assert.ThrowsAsync<RpcException>(() =>
+            client.GetSubscriptionMembersAsync(request).ResponseAsync);
 
             Assert.Equal(StatusCode.NotFound, exception.StatusCode);
             Assert.NotEmpty(exception.Status.Detail);

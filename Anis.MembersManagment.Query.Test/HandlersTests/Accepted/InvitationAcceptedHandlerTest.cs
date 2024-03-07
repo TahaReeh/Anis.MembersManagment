@@ -74,12 +74,12 @@ namespace Anis.MembersManagment.Query.Test.HandlersTests.Accepted
         public async Task InvitationAccepted_DublicateInvitationAcceptedEventHandled_DuplicateEventIgnored()
         {
             var sentEvent = new InvitationSentFaker(sequence: 1).Generate();
-
-            await _handlerHelper.HandleAsync(sentEvent);
-
             var acceptedEvent = new InvitationAcceptedFaker(sentEvent).Generate();
 
-            await _handlerHelper.HandleAsync(acceptedEvent);
+            await Task.WhenAll(
+                _handlerHelper.HandleAsync(sentEvent),
+                _handlerHelper.HandleAsync(acceptedEvent)
+                );
 
             var isHandled = await _handlerHelper.TryHandleAsync(acceptedEvent);
 

@@ -16,11 +16,11 @@ namespace Anis.MembersManagment.Query.QueryHandlers.OwnerPendingInvitations
 
         public async Task<OwnerPendingInvitationsResult> Handle(OwnerPendingInvitationsQuery request, CancellationToken cancellationToken)
         {
-            var invitations = await _unitOfWork.Invitation.GetAllAsync(i => i.Subscription!.UserId == request.UserId,
+            var invitations = await _unitOfWork.Invitation.GetAllAsync(i => i.Subscription.UserId == request.UserId,
                 includeProperties: "Subscription,User",
                 request.Page, request.Size);
 
-            if (invitations is null)
+            if (!invitations.Any())
                 throw new NotFoundException("There are no pending invitations");
 
             return new OwnerPendingInvitationsResult(

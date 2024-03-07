@@ -25,7 +25,6 @@ namespace Anis.MembersManagment.Query.Test.HandlersTests.PermissionChanged
 
         [Fact]
         public async Task PermissionChanged_EventHandled_PermissionUpdatedSubscriberSequenceUpdated()
-        // TODO: add sequence increment test to all handlers
         {
             var joinedEvent = new MemberJoinedFaker(sequence: 1).Generate();
             await _handlerHelper.HandleAsync(joinedEvent);
