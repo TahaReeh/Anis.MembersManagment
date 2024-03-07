@@ -4,16 +4,10 @@ using MediatR;
 
 namespace Anis.MembersManagment.Query.EventHandlers.IncrementSequence
 {
-    public class UnknownEventHandler : IRequestHandler<UnknownEvent, bool>
+    public class UnknownEventHandler(IUnitOfWork unitOfWork, ILogger<InvitationSentHandler> logger) : IRequestHandler<UnknownEvent, bool>
     {
-        private readonly ILogger<InvitationSentHandler> _logger;
-        private readonly IUnitOfWork _unitOfWork;
-
-        public UnknownEventHandler(IUnitOfWork unitOfWork, ILogger<InvitationSentHandler> logger)
-        {
-            _unitOfWork = unitOfWork;
-            _logger = logger;
-        }
+        private readonly ILogger<InvitationSentHandler> _logger = logger;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         public async Task<bool> Handle(UnknownEvent @event, CancellationToken cancellationToken)
         {

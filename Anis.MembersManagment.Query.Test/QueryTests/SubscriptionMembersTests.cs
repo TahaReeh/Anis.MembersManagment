@@ -1,16 +1,11 @@
 ﻿namespace Anis.MembersManagment.Query.Test.QueryTests
 {
-    public class SubscriptionMembersTests : IClassFixture<WebApplicationFactory<Program>>
+    public class SubscriptionMembersTests(WebApplicationFactory<Program> factory, ITestOutputHelper helper) : IClassFixture<WebApplicationFactory<Program>>
     {
-        private readonly WebApplicationFactory<Program> _factory;
-
-        public SubscriptionMembersTests(WebApplicationFactory<Program> factory, ITestOutputHelper helper)
-        {
-            _factory = factory.WithDefaultConfigurations(helper, services =>
+        private readonly WebApplicationFactory<Program> _factory = factory.WithDefaultConfigurations(helper, services =>
             {
                 services.ReplaceWithInMemoryDatabase();
             });
-        }
 
         [Fact]
         public async Task SubscriptionMembers_QueryExistingEntities_ReturnsSelectedSubscriptionMembers()

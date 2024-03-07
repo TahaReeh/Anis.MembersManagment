@@ -5,17 +5,11 @@ using System.Linq.Expressions;
 
 namespace Anis.MembersManagment.Query.Infrastructure.Persistence.Repositories
 {
-    public class BaseRepository<T> : IBaseRepository<T> where T : class
+    public class BaseRepository<T>(ApplicationDbContext context) : IBaseRepository<T> where T : class
     {
-        protected readonly ApplicationDbContext _context;
-        internal DbSet<T> dbSet;
+        protected readonly ApplicationDbContext _context = context;
+        internal DbSet<T> dbSet = context.Set<T>();
         private static readonly char[] separator = [','];
-
-        public BaseRepository(ApplicationDbContext context)
-        {
-            _context = context;
-            dbSet = context.Set<T>();
-        }
 
         public async Task<IEnumerable<T>> GetAllAsync(
             Expression<Func<T, bool>>? filter = null,
@@ -65,7 +59,7 @@ namespace Anis.MembersManagment.Query.Infrastructure.Persistence.Repositories
                 if (!string.IsNullOrEmpty(includeProperties))
                 {
                     foreach (var property in includeProperties
-                        .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                        .Split(separator, StringSplitOptions.RemoveEmptyEntries))
                     {
                         query = query.Include(property);
                     }

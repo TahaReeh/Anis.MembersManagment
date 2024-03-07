@@ -4,14 +4,9 @@ using MediatR;
 
 namespace Anis.MembersManagment.Query.QueryHandlers.MemberPendingInvitations
 {
-    public class MemberPendingInvitationsQueryHandler : IRequestHandler<MemberPendingInvitationsQuery, MemberPendingInvitationsResult>
+    public class MemberPendingInvitationsQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<MemberPendingInvitationsQuery, MemberPendingInvitationsResult>
     {
-        private readonly IUnitOfWork _unitOfWork;
-
-        public MemberPendingInvitationsQueryHandler(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-        }
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         public async Task<MemberPendingInvitationsResult> Handle(MemberPendingInvitationsQuery request, CancellationToken cancellationToken)
         {

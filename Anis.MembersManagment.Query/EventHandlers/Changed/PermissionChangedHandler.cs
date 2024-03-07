@@ -6,16 +6,10 @@ using System.ComponentModel;
 
 namespace Anis.MembersManagment.Query.EventHandlers.Changed
 {
-    public class PermissionChangedHandler : IRequestHandler<PermissionChanged, bool>
+    public class PermissionChangedHandler(IUnitOfWork unitOfWork, ILogger<InvitationSentHandler> logger) : IRequestHandler<PermissionChanged, bool>
     {
-        private readonly ILogger<InvitationSentHandler> _logger;
-        private readonly IUnitOfWork _unitOfWork;
-
-        public PermissionChangedHandler(IUnitOfWork unitOfWork, ILogger<InvitationSentHandler> logger)
-        {
-            _unitOfWork = unitOfWork;
-            _logger = logger;
-        }
+        private readonly ILogger<InvitationSentHandler> _logger = logger;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         public async Task<bool> Handle(PermissionChanged @event, CancellationToken cancellationToken)
         {

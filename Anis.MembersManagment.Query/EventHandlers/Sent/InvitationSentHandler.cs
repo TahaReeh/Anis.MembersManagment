@@ -5,16 +5,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Anis.MembersManagment.Query.EventHandlers.Sent
 {
-    public class InvitationSentHandler : IRequestHandler<InvitationSent, bool>
+    public class InvitationSentHandler(IUnitOfWork unitOfWork, ILogger<InvitationSentHandler> logger) : IRequestHandler<InvitationSent, bool>
     {
-        private readonly ILogger<InvitationSentHandler> _logger;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<InvitationSentHandler> _logger = logger;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public InvitationSentHandler(IUnitOfWork unitOfWork, ILogger<InvitationSentHandler> logger)
-        {
-            _unitOfWork = unitOfWork;
-            _logger = logger;
-        }
         public async Task<bool> Handle(InvitationSent @event, CancellationToken cancellationToken)
         {
             var invite = await _unitOfWork.Invitation.GetAsync(i => i.Id == @event.AggregateId);

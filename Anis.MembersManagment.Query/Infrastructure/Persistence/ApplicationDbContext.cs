@@ -4,12 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Anis.MembersManagment.Query.Infrastructure.Persistence
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        {
-        }
-
         public DbSet<User> Users { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<Invitation> Invitations { get; set; }

@@ -1,16 +1,11 @@
 ﻿namespace Anis.MembersManagment.Query.Test.QueryTests
 {
-    public class MemberPendingInvitationsTest : IClassFixture<WebApplicationFactory<Program>>
+    public class MemberPendingInvitationsTest(WebApplicationFactory<Program> factory, ITestOutputHelper helper) : IClassFixture<WebApplicationFactory<Program>>
     {
-        private readonly WebApplicationFactory<Program> _factory;
-
-        public MemberPendingInvitationsTest(WebApplicationFactory<Program> factory, ITestOutputHelper helper)
-        {
-            _factory = factory.WithDefaultConfigurations(helper, services =>
+        private readonly WebApplicationFactory<Program> _factory = factory.WithDefaultConfigurations(helper, services =>
             {
                 services.ReplaceWithInMemoryDatabase();
             });
-        }
 
         [Fact]
         public async Task MemberPendingInvitations_QueryExistingEntities_ReturnsSelectedMemberInvitations()

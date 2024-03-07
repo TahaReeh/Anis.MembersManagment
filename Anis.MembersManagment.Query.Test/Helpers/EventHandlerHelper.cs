@@ -2,14 +2,9 @@
 
 namespace Anis.MembersManagment.Query.Test.Helpers
 {
-    public class EventHandlerHelper
+    public class EventHandlerHelper(IServiceProvider provider)
     {
-        private readonly IServiceProvider _provider;
-
-        public EventHandlerHelper(IServiceProvider provider)
-        {
-            _provider = provider;
-        }
+        private readonly IServiceProvider _provider = provider;
 
         public async Task HandleAsync<TEvent>(TEvent @event) where TEvent : IRequest<bool>
         {

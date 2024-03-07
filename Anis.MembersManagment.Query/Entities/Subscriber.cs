@@ -78,7 +78,8 @@ namespace Anis.MembersManagment.Query.Entities
         {
             Sequence = entity.Sequence;
             Status = entity.Status;
-            JoinedAt = entity.JoinedAt; // TODO: should only change in joined and accepted events
+            if (entity.Status is "Accepted" or "Joined")
+                JoinedAt = entity.JoinedAt;
         }
 
         public void UpdateSequence(int sequence)

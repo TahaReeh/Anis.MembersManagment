@@ -16,7 +16,7 @@ namespace Anis.MembersManagment.Query.Infrastructure.ServiceBus
 {
     public class MembersEventsListner : IHostedService
     {
-        private ServiceBusSessionProcessor _processor;
+        private readonly ServiceBusSessionProcessor _processor;
         private readonly ServiceBusProcessor _deadLetterProcessor;
         private readonly ILogger<MembersEventsListner> _logger;
         private readonly IServiceProvider _serviceProvider;

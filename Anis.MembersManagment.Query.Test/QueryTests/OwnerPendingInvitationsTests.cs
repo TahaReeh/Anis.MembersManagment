@@ -1,16 +1,11 @@
 ﻿namespace Anis.MembersManagment.Query.Test.QueryTests
 {
-    public class OwnerPendingInvitationsTests : IClassFixture<WebApplicationFactory<Program>>
+    public class OwnerPendingInvitationsTests(WebApplicationFactory<Program> factory, ITestOutputHelper helper) : IClassFixture<WebApplicationFactory<Program>>
     {
-        private readonly WebApplicationFactory<Program> _factory;
-
-        public OwnerPendingInvitationsTests(WebApplicationFactory<Program> factory, ITestOutputHelper helper)
-        {
-            _factory = factory.WithDefaultConfigurations(helper, services =>
+        private readonly WebApplicationFactory<Program> _factory = factory.WithDefaultConfigurations(helper, services =>
             {
                 services.ReplaceWithInMemoryDatabase();
             });
-        }
 
         [Fact]
         public async Task OwnerPendingInvitations_QueryExistingEntities_ReturnsOwnerPendingInvitations()

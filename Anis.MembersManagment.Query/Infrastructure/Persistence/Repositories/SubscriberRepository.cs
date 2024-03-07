@@ -5,28 +5,18 @@ using static Grpc.Core.Metadata;
 
 namespace Anis.MembersManagment.Query.Infrastructure.Persistence.Repositories
 {
-    public class SubscriberRepository : BaseRepository<Subscriber>, ISubscriberRepository
+    public class SubscriberRepository(ApplicationDbContext context) : BaseRepository<Subscriber>(context), ISubscriberRepository
     {
-        public SubscriberRepository(ApplicationDbContext context) : base(context)
-        {
-        }
-
         public async Task ChangeStatusAsync(Subscriber entity)
         {
             var subscriber = await _context.Subscribers.FirstOrDefaultAsync(s => s.Id == entity.Id);
-            if (subscriber is not null)
-            {
-                subscriber.ChangeStatus(entity);
-            }
+            subscriber?.ChangeStatus(entity);
         }
 
         public async Task UpdateSequence(string aggregateId, int sequence)
         {
             var subscriber = await _context.Subscribers.FirstOrDefaultAsync(s => s.Id == aggregateId);
-            if (subscriber is not null)
-            {
-                subscriber.UpdateSequence(sequence);
-            }
+            subscriber?.UpdateSequence(sequence);
         }
     }
 }

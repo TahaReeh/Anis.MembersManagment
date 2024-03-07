@@ -5,16 +5,10 @@ using MediatR;
 
 namespace Anis.MembersManagment.Query.EventHandlers.Left
 {
-    public class MemberLeftHandler : IRequestHandler<MemberLeft, bool>
+    public class MemberLeftHandler(IUnitOfWork unitOfWork, ILogger<InvitationSentHandler> logger) : IRequestHandler<MemberLeft, bool>
     {
-        private readonly ILogger<InvitationSentHandler> _logger;
-        private readonly IUnitOfWork _unitOfWork;
-
-        public MemberLeftHandler(IUnitOfWork unitOfWork, ILogger<InvitationSentHandler> logger)
-        {
-            _unitOfWork = unitOfWork;
-            _logger = logger;
-        }
+        private readonly ILogger<InvitationSentHandler> _logger = logger;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         public async Task<bool> Handle(MemberLeft @event, CancellationToken cancellationToken)
         {

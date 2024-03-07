@@ -6,16 +6,9 @@ using MediatR;
 
 namespace Anis.MembersManagment.Query.Services
 {
-    public class MembersService : Members.MembersBase
+    public class MembersService(IMediator mediator) : Members.MembersBase
     {
-        private readonly ILogger<MembersService> _logger;
-        private readonly IMediator _mediator;
-
-        public MembersService(ILogger<MembersService> logger, IMediator mediator)
-        {
-            _logger = logger;
-            _mediator = mediator;
-        }
+        private readonly IMediator _mediator = mediator;
 
         public override async Task<GetSubscriptionMembersResponse> GetSubscriptionMembers(GetSubscriptionMembersRequest request, ServerCallContext context)
         {

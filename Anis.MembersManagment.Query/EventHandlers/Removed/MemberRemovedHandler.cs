@@ -5,16 +5,10 @@ using MediatR;
 
 namespace Anis.MembersManagment.Query.EventHandlers.Removed
 {
-    public class MemberRemovedHandler : IRequestHandler<MemberRemoved, bool>
+    public class MemberRemovedHandler(IUnitOfWork unitOfWork, ILogger<InvitationSentHandler> logger) : IRequestHandler<MemberRemoved, bool>
     {
-        private readonly ILogger<InvitationSentHandler> _logger;
-        private readonly IUnitOfWork _unitOfWork;
-
-        public MemberRemovedHandler(IUnitOfWork unitOfWork, ILogger<InvitationSentHandler> logger)
-        {
-            _unitOfWork = unitOfWork;
-            _logger = logger;
-        }
+        private readonly ILogger<InvitationSentHandler> _logger = logger;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         public async Task<bool> Handle(MemberRemoved @event, CancellationToken cancellationToken)
         {

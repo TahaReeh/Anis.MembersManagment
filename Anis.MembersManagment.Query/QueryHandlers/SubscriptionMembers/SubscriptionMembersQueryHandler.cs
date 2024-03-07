@@ -4,14 +4,9 @@ using MediatR;
 
 namespace Anis.MembersManagment.Query.QueryHandlers.SubscriptionMembers
 {
-    public class SubscriptionMembersQueryHandler : IRequestHandler<SubscriptionMembersQuery, SubscriptionMembersResult>
+    public class SubscriptionMembersQueryHandler(IUnitOfWork unitOfWork) : IRequestHandler<SubscriptionMembersQuery, SubscriptionMembersResult>
     {
-        private readonly IUnitOfWork _unitOfWork;
-
-        public SubscriptionMembersQueryHandler(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-        }
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         public async Task<SubscriptionMembersResult> Handle(SubscriptionMembersQuery request, CancellationToken cancellationToken)
         {

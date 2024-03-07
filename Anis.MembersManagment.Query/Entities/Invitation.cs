@@ -25,12 +25,12 @@ namespace Anis.MembersManagment.Query.Entities
 
         public static Invitation FromInvitationSentEvent(InvitationSent @event)
             => new(
-                id : @event.AggregateId,
-                sequence : @event.Sequence,
-                subscriptionId : @event.Data.SubscriptionId,
-                userId : @event.Data.MemberId,
-                status : "Pending", // TODO: to enum
-                sentAt : @event.DateTime
+                id: @event.AggregateId,
+                sequence: @event.Sequence,
+                subscriptionId: @event.Data.SubscriptionId,
+                userId: @event.Data.MemberId,
+                status: "Pending", // TODO: to enum
+                sentAt: @event.DateTime
                 );
 
         public static Invitation FromInvitationCancelledEvent(InvitationCancelled @event)
@@ -64,7 +64,7 @@ namespace Anis.MembersManagment.Query.Entities
                );
 
         public string Id { get; private set; }
-        public int Sequence {  get; private set; }
+        public int Sequence { get; private set; }
         public string SubscriptionId { get; private set; }
         public Subscription Subscription { get; private set; } = default!;
         public string UserId { get; private set; }
@@ -76,7 +76,8 @@ namespace Anis.MembersManagment.Query.Entities
         {
             Sequence = entity.Sequence;
             Status = entity.Status;
-            SentAt = entity.SentAt;
+            if (entity.Status == "Sent")
+                SentAt = entity.SentAt;
         }
 
         public void UpdateSequence(int sequence)

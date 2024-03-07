@@ -5,14 +5,9 @@ using MediatR;
 
 namespace Anis.MembersManagment.Command.Commands.ChangePermission
 {
-    public class ChangePermissionCommandHandler : IRequestHandler<ChangePermissionCommand, string>
+    public class ChangePermissionCommandHandler(IEventStore eventStore) : IRequestHandler<ChangePermissionCommand, string>
     {
-        private readonly IEventStore _eventStore;
-
-        public ChangePermissionCommandHandler(IEventStore eventStore)
-        {
-            _eventStore = eventStore;
-        }
+        private readonly IEventStore _eventStore = eventStore;
 
         public async Task<string> Handle(ChangePermissionCommand command, CancellationToken cancellationToken)
         {
