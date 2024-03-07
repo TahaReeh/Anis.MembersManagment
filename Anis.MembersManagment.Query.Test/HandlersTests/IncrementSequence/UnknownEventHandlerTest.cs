@@ -6,11 +6,6 @@ using Anis.MembersManagment.Query.Test.Fakers.Sent;
 using Anis.MembersManagment.Query.Test.Helpers;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit.Abstractions;
 
 namespace Anis.MembersManagment.Query.Test.HandlersTests.IncrementSequence
