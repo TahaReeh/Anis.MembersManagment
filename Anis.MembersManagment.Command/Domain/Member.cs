@@ -8,6 +8,7 @@ using Anis.MembersManagment.Command.Commands.RejectInvitation;
 using Anis.MembersManagment.Command.Commands.RemoveMember;
 using Anis.MembersManagment.Command.Commands.SendInvitation;
 using Anis.MembersManagment.Command.Events;
+using Anis.MembersManagment.Command.Exceptions;
 using Anis.MembersManagment.Command.Extensions;
 using Grpc.Core;
 
@@ -19,10 +20,10 @@ namespace Anis.MembersManagment.Command.Domain
         public void SendInvitation(SendInvitationCommand command)
         {
             if (HasInvitationPending)
-                throw new RpcException(new Status(StatusCode.InvalidArgument, "Invitation still pending"));
+                throw new BusinessRuleViolationException("Invitation still pending");
 
             if (IsJoined)
-                throw new RpcException(new Status(StatusCode.AlreadyExists, "The member already exists in this subscription"));
+                throw new AlreadyExistsException("The member already exists in this subscription");
 
             ApplyNewChange(command.ToEvent(NextSequence));
         }
@@ -50,7 +51,7 @@ namespace Anis.MembersManagment.Command.Domain
         public void JoinMember(JoinMemberCommand command)
         {
             if (IsJoined)
-                throw new RpcException(new Status(StatusCode.AlreadyExists, "The member already exists in this subscription"));
+                throw new AlreadyExistsException("The member already exists in this subscription");
 
             ApplyNewChange(command.ToEvent(NextSequence));
         }
@@ -58,7 +59,7 @@ namespace Anis.MembersManagment.Command.Domain
         public void RemoveMember(RemoveMemberCommand command)
         {
             if (!IsJoined)
-                throw new RpcException(new Status(StatusCode.NotFound, "There is no such member in this subscription"));
+                throw new NotFoundException("There is no such member in this subscription");
 
             ApplyNewChange(command.ToEvent(NextSequence));
         }
@@ -66,7 +67,7 @@ namespace Anis.MembersManagment.Command.Domain
         public void Leave(LeaveCommand command)
         {
             if (!IsJoined)
-                throw new RpcException(new Status(StatusCode.NotFound, "There is no such member in this subscription"));
+                throw new NotFoundException("There is no such member in this subscription");
 
             ApplyNewChange(command.ToEvent(NextSequence));
         }
@@ -74,10 +75,10 @@ namespace Anis.MembersManagment.Command.Domain
         public void ChangePermission(ChangePermissionCommand command)
         {
             if (!IsJoined)
-                throw new RpcException(new Status(StatusCode.NotFound, "There is no such member in this subscription"));
+                throw new NotFoundException("There is no such member in this subscription");
 
             if (HasInvitationPending)
-                throw new RpcException(new Status(StatusCode.InvalidArgument, "Invitation still pending"));
+                throw new BusinessRuleViolationException("Invitation still pending");
 
             ApplyNewChange(command.ToEvent(NextSequence));
         }
@@ -161,10 +162,10 @@ namespace Anis.MembersManagment.Command.Domain
         private void ValidateRequest()
         {
             if (IsJoined)
-                throw new RpcException(new Status(StatusCode.AlreadyExists, "The member already exists in this subscription"));
+                throw new AlreadyExistsException("The member already exists in this subscription");
 
             if (!HasInvitationPending && !IsJoined)
-                throw new RpcException(new Status(StatusCode.InvalidArgument, "This invitation is invalid"));
+                throw new BusinessRuleViolationException("This invitation is invalid");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Anis.MembersManagment.Command.Validators;
+﻿using Anis.MembersManagment.Command.GrpcServices.Interceptors;
+using Anis.MembersManagment.Command.Validators;
 using Calzolari.Grpc.AspNetCore.Validation;
 
 namespace Anis.MembersManagment.Command.Services
@@ -10,6 +11,7 @@ namespace Anis.MembersManagment.Command.Services
             services.AddGrpc(options =>
             {
                 options.EnableMessageValidation();
+                options.Interceptors.Add<ApplicationExceptionInterceptor>();
 
             });
 

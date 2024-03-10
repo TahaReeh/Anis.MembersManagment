@@ -15,7 +15,7 @@ namespace Anis.MembersManagment.Command.Commands.CancelInvitation
             var events = await _eventStore.GetAllAsync(command.Id, cancellationToken);
 
             if (events.Count == 0)
-                throw new RpcException(new Status(StatusCode.InvalidArgument, "Invitation not found"));
+                throw new NotFoundException("Invitation not found");
 
             var member = Member.LoadFromHistory(events);
 
