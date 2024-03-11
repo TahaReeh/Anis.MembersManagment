@@ -80,6 +80,9 @@ namespace Anis.MembersManagment.Command.Domain
             if (HasInvitationPending)
                 throw new BusinessRuleViolationException("Invitation still pending");
 
+            if (command.Permissions == Permissions)
+                throw new BusinessRuleViolationException("Invitation still pending");
+
             ApplyNewChange(command.ToEvent(NextSequence));
         }
 
@@ -87,6 +90,7 @@ namespace Anis.MembersManagment.Command.Domain
 
         public bool IsJoined { get; private set; }
         public bool HasInvitationPending { get; private set; }
+        public Permission? Permissions { get; private set; }
 
         protected override void Mutate(Event @event)
         {
@@ -113,13 +117,17 @@ namespace Anis.MembersManagment.Command.Domain
                 case MemberLeft e:
                     Mutate(e);
                     break;
+                case PermissionChanged e:
+                    Mutate(e);
+                    break;
             }
         }
 
-        public void Mutate(InvitationSent _)
+        public void Mutate(InvitationSent @event)
         {
             IsJoined = false;
             HasInvitationPending = true;
+            Permissions = @event.Data.Permissions;
         }
 
         public void Mutate(InvitationAccepted _)
@@ -140,10 +148,11 @@ namespace Anis.MembersManagment.Command.Domain
             HasInvitationPending = false;
         }
 
-        public void Mutate(MemberJoined _)
+        public void Mutate(MemberJoined @event)
         {
             IsJoined = true;
             HasInvitationPending = false;
+            Permissions = @event.Data.Permissions;
         }
 
         public void Mutate(MemberRemoved _)
@@ -158,6 +167,10 @@ namespace Anis.MembersManagment.Command.Domain
             HasInvitationPending = false;
         }
 
+        public void Mutate(PermissionChanged @event)
+        {
+            Permissions = @event.Data.Permissions;
+        }
 
         private void ValidateRequest()
         {

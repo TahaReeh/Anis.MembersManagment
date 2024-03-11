@@ -1,4 +1,7 @@
-﻿namespace Anis.MembersManagment.Command.Test.MembersServiceTests.ChangePermission
+﻿using Azure.Core;
+using Microsoft.Azure.Amqp.Framing;
+
+namespace Anis.MembersManagment.Command.Test.MembersServiceTests.ChangePermission
 {
     public class ChangePermissionTest(WebApplicationFactory<Program> factory, ITestOutputHelper helper) : IClassFixture<WebApplicationFactory<Program>>
     {
@@ -119,6 +122,47 @@
             var exception = await Assert.ThrowsAsync<RpcException>(async () => await client.ChangePermissionAsync(request));
 
             Assert.Equal(StatusCode.NotFound, exception.StatusCode);
+        }
+
+        [Fact]
+        public async Task ChangePermission_SendRequestWithTheSamePermissionRoles_ThrowsInvalidArgumentRpcException()
+        {
+            var client = new Members.MembersClient(_factory.CreateGrpcChannel());
+
+            var joinRequest = new JoinMemberRequest
+            {
+                AccountId = "AccountId",
+                SubscriptionId = "subscriptionId",
+                MemberId = "memberId",
+                UserId = "userId",
+                Permissions = new Permissions
+                {
+                    Transfer = true,
+                    PurchaseCards = false,
+                    ManageDevices = false
+                }
+            };
+
+            var joinResponse = await client.JoinMemberAsync(joinRequest);
+
+            var changePermRequest = new ChangePermissionRequest
+            {
+                Id = joinResponse.Id,
+                AccountId = "AccountId",
+                SubscriptionId = "subscriptionId",
+                MemberId = "memberId",
+                UserId = "userId",
+                Permissions = new Permissions
+                {
+                    Transfer = true,
+                    PurchaseCards = false,
+                    ManageDevices = false
+                }
+            };
+
+            var exception = await Assert.ThrowsAsync<RpcException>(async () => await client.ChangePermissionAsync(changePermRequest));
+
+            Assert.Equal(StatusCode.InvalidArgument, exception.StatusCode);
         }
     }
 }

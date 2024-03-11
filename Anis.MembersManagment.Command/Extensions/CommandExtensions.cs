@@ -20,11 +20,11 @@ namespace Anis.MembersManagment.Command.Extensions
                 MemberId = request.MemberId ,
                 UserId = request.UserId ,
                 Permissions = new Permission
-                {
-                    Transfer = request.Permissions.Transfer,
-                    PurchaseCards = request.Permissions.PurchaseCards,
-                    ManageDevices = request.Permissions.ManageDevices
-                }
+                (
+                    Transfer : request.Permissions.Transfer,
+                    PurchaseCards: request.Permissions.PurchaseCards,
+                    ManageDevices: request.Permissions.ManageDevices
+                )
             };
 
         public static AcceptInvitationCommand ToCommand(this AcceptInvitationRequest request)
@@ -65,11 +65,11 @@ namespace Anis.MembersManagment.Command.Extensions
                 MemberId = request.MemberId,
                 UserId = request.UserId,
                 Permissions = new Permission
-                {
-                    Transfer = request.Permissions.Transfer,
-                    PurchaseCards = request.Permissions.PurchaseCards,
-                    ManageDevices = request.Permissions.ManageDevices
-                }
+                (
+                    Transfer: request.Permissions.Transfer,
+                    PurchaseCards: request.Permissions.PurchaseCards,
+                    ManageDevices: request.Permissions.ManageDevices
+                )
             };
 
         public static RemoveMemberCommand ToCommand(this RemoveMemberRequest request)
@@ -101,11 +101,11 @@ namespace Anis.MembersManagment.Command.Extensions
                MemberId = request.MemberId,
                UserId = request.UserId,
                Permissions = new Permission
-               {
-                   Transfer = request.Permissions.Transfer,
-                   PurchaseCards = request.Permissions.PurchaseCards,
-                   ManageDevices = request.Permissions.ManageDevices
-               }
+                (
+                    Transfer: request.Permissions.Transfer,
+                    PurchaseCards: request.Permissions.PurchaseCards,
+                    ManageDevices: request.Permissions.ManageDevices
+                )
            };
     }
 }
