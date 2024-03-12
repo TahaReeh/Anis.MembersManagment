@@ -81,7 +81,7 @@ namespace Anis.MembersManagment.Command.Domain
                 throw new BusinessRuleViolationException("Invitation still pending");
 
             if (command.Permissions == Permissions)
-                throw new BusinessRuleViolationException("Invitation still pending");
+                throw new BusinessRuleViolationException("The member already has these permissions");
 
             ApplyNewChange(command.ToEvent(NextSequence));
         }
