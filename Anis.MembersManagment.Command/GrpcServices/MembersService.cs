@@ -74,7 +74,7 @@ namespace Anis.MembersManagment.Command.GrpcServices
             return new Response()
             {
                 Id = response,
-                Message  = "Member joined successfully"
+                Message = "Member joined successfully"
             };
         }
 

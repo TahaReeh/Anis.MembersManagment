@@ -10,7 +10,6 @@ using Anis.MembersManagment.Command.Commands.SendInvitation;
 using Anis.MembersManagment.Command.Events;
 using Anis.MembersManagment.Command.Exceptions;
 using Anis.MembersManagment.Command.Extensions;
-using Grpc.Core;
 
 namespace Anis.MembersManagment.Command.Domain
 {
