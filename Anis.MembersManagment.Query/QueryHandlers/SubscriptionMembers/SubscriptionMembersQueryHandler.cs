@@ -10,8 +10,8 @@ namespace Anis.MembersManagment.Query.QueryHandlers.SubscriptionMembers
 
         public async Task<SubscriptionMembersResult> Handle(SubscriptionMembersQuery request, CancellationToken cancellationToken)
         {
-            var subscribers = await _unitOfWork.Subscriber.GetAllAsync(s => s.SubscriptionId == request.SubscriptionId,
-                  includeProperties: "Subscription,User",
+            var subscribers = await _unitOfWork.Subscriber.GetAllAsync(s => s.SubscriptionId == request.SubscriptionId 
+            && (s.Status == "Joined" || s.Status == "Accepted"),includeProperties: "Subscription,User",
                   request.Page, request.Size
                   );
 

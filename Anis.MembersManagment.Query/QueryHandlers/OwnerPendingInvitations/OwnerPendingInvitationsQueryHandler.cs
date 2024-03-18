@@ -11,8 +11,8 @@ namespace Anis.MembersManagment.Query.QueryHandlers.OwnerPendingInvitations
 
         public async Task<OwnerPendingInvitationsResult> Handle(OwnerPendingInvitationsQuery request, CancellationToken cancellationToken)
         {
-            var invitations = await _unitOfWork.Invitation.GetAllAsync(i => i.Subscription.UserId == request.UserId,
-                includeProperties: "Subscription,User",
+            var invitations = await _unitOfWork.Invitation.GetAllAsync(i => i.Subscription.UserId == request.UserId
+                && i.Status == "Pending", includeProperties: "Subscription,User",
                 request.Page, request.Size);
 
             if (!invitations.Any())

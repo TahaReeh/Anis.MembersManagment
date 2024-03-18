@@ -10,8 +10,8 @@ namespace Anis.MembersManagment.Query.QueryHandlers.MemberPendingInvitations
 
         public async Task<MemberPendingInvitationsResult> Handle(MemberPendingInvitationsQuery request, CancellationToken cancellationToken)
         {
-            var invitations = await _unitOfWork.Invitation.GetAllAsync(i => i.UserId == request.UserId,
-                   includeProperties: "Subscription,User", request.Page, request.Size);
+            var invitations = await _unitOfWork.Invitation.GetAllAsync(i => i.UserId == request.UserId
+            && i.Status == "Pending", includeProperties: "Subscription,User", request.Page, request.Size);
 
             if (!invitations.Any())
                 throw new NotFoundException("There are no pending invitations");

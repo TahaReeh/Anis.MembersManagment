@@ -17,7 +17,7 @@ namespace Anis.MembersManagment.Query.Test.Fakers.EntitiesFakers
             RuleFor(i => i.SubscriptionId, faker => faker.Random.Guid().ToString());
             RuleFor(i => i.User, new UserFaker());
             RuleFor(i => i.UserId, faker => faker.Random.Guid().ToString());
-            RuleFor(i => i.Status, "Pending");
+            RuleFor(i => i.Status, "Joined");
             RuleFor(i => i.JoinedAt, DateTime.UtcNow);
         }
 
